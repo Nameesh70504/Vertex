@@ -29,12 +29,17 @@
   /* Success */
   --color-success-500: #16a34a;
 
+  /* Brand marks (course logos) */
+  --color-brand-nextjs: #000000;
+  --color-brand-typescript: #3178c6;
+  --color-brand-docker: #2496ed;
+
   /* Radius */
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
@@ -46,55 +51,71 @@
 /* Type scale utilities — size / line-height / weight (+ family for display) */
 @utility text-display-1 {
   font-family: var(--font-display);
-  font-size: 48px;
-  line-height: 56px;
+  font-size: 3rem;
+  line-height: 3.5rem;
   font-weight: 700;
 }
 
 @utility text-display-2 {
   font-family: var(--font-display);
-  font-size: 36px;
-  line-height: 44px;
+  font-size: 2.25rem;
+  line-height: 2.75rem;
   font-weight: 700;
 }
 
 @utility text-heading-1 {
-  font-size: 28px;
-  line-height: 36px;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
   font-weight: 600;
 }
 
 @utility text-heading-2 {
-  font-size: 22px;
-  line-height: 30px;
+  font-size: 1.375rem;
+  line-height: 1.875rem;
   font-weight: 600;
 }
 
 @utility text-heading-3 {
-  font-size: 18px;
-  line-height: 26px;
+  font-size: 1.125rem;
+  line-height: 1.625rem;
   font-weight: 500;
 }
 
 @utility text-body-large {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 1rem;
+  line-height: 1.5rem;
   font-weight: 400;
 }
 
 @utility text-body {
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   font-weight: 400;
 }
 
 @utility text-small {
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 0.75rem;
+  line-height: 1rem;
   font-weight: 400;
 }
 
 @layer base {
+  html {
+    font-size: 16px;
+  }
+
+  /*
+   * Desktop scale: the design reads at 100% the way it used to read at 67% zoom
+   * on a 1366px screen. Everything is rem based, so the whole page scales
+   * proportionally instead of only the container. Capped at 16px so it stops
+   * growing on very wide displays.
+   */
+  @media (min-width: 1024px) {
+    html {
+      font-size: clamp(11px, calc(100vw / 127.5), 16px);
+    }
+  }
+
   body {
     background: #ffffff;
     color: var(--color-neutral-900);

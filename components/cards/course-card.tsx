@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 export type CourseCardProps = {
   title: string;
   description: string;
+  logo?: React.ReactNode;
   logoText?: string;
   level: string;
   duration: string;
@@ -16,6 +17,7 @@ export type CourseCardProps = {
 export function CourseCard({
   title,
   description,
+  logo,
   logoText = "N",
   level,
   duration,
@@ -24,28 +26,30 @@ export function CourseCard({
   className,
 }: CourseCardProps) {
   return (
-    <Card className={cn("flex flex-col gap-4", className)}>
-      <div className="flex items-start gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-neutral-900 text-heading-3 font-semibold text-white">
-          {logoText}
-        </div>
-        <div className="space-y-1">
-          <h3 className="text-heading-3 text-neutral-900">
-            {href ? (
-              <a href={href} className="hover:text-primary-500">
-                {title}
-              </a>
-            ) : (
-              title
-            )}
-          </h3>
-          <p className="text-body text-neutral-500">{description}</p>
-        </div>
+    <Card className={cn("flex flex-col", className)}>
+      <div className="mb-6">
+        {logo ?? (
+          <div className="flex h-11 w-11 items-center justify-center rounded-md bg-neutral-900 text-heading-3 font-semibold text-white">
+            {logoText}
+          </div>
+        )}
       </div>
-      <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 text-small text-neutral-500">
-        <MetaItem icon={<BarChart3 />} label={level} />
-        <MetaItem icon={<Clock />} label={duration} />
-        <MetaItem icon={<LayoutGrid />} label={modules} />
+      <h3 className="font-display text-heading-2 text-neutral-900">
+        {href ? (
+          <a href={href} className="hover:text-primary-500">
+            {title}
+          </a>
+        ) : (
+          title
+        )}
+      </h3>
+      <p className="mt-2 text-body text-neutral-500">{description}</p>
+      <div className="mt-auto pt-6">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-neutral-200 pt-4 text-small text-neutral-500">
+          <MetaItem icon={<BarChart3 />} label={level} />
+          <MetaItem icon={<Clock />} label={duration} />
+          <MetaItem icon={<LayoutGrid />} label={modules} />
+        </div>
       </div>
     </Card>
   );

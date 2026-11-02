@@ -18,7 +18,7 @@ export function Badge({ variant = "video", children, className }: BadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-[6px] px-2 py-0.5 text-small font-semibold uppercase tracking-wider",
+        "inline-flex items-center rounded-[0.375rem] px-2 py-0.5 text-small font-semibold uppercase tracking-wider",
         variants[variant],
         className,
       )}

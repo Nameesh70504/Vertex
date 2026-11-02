@@ -1,0 +1,51 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://marketplace.visualstudio.com/items?itemName=pomdtr.excalidraw-editor",
+  "elements": [
+    {
+      "id": "Wz6lNpvc5KuHLbHUNSqTt",
+      "type": "text",
+      "x": 151.92135125202344,
+      "y": 66.789489646329,
+      "width": 417,
+      "height": 48.81955032587351,
+      "angle": 0,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "a3",
+      "roundness": null,
+      "seed": 645202554,
+      "version": 215,
+      "versionNonce": 137200506,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1792273350124,
+      "link": null,
+      "locked": false,
+      "text": "Tool Knowledge     -------->          SKILLS\nProject Rules       -------->    AGENTS.MD",
+      "fontSize": 19.527820130349404,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Tool Knowledge     -------->          SKILLS\nProject Rules       -------->    AGENTS.MD",
+      "autoResize": true,
+      "lineHeight": 1.25
+    }
+  ],
+  "appState": {
+    "gridSize": 20,
+    "gridStep": 5,
+    "gridModeEnabled": false,
+    "viewBackgroundColor": "#1111"
+  },
+  "files": {}
+}

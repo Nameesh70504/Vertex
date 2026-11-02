@@ -14,10 +14,13 @@ import {
   Search,
   User,
 } from "lucide-react";
+
 import { Logo } from "@/components/brand/logo";
+
 import {
   CourseCard,
 } from "@/components/cards/course-card";
+
 import { LessonCard } from "@/components/cards/lesson-card";
 import { LessonVideoCard } from "@/components/cards/lesson-video-card";
 import { ResourceCard } from "@/components/cards/resource-card";
@@ -35,7 +38,7 @@ import { cn } from "@/lib/utils";
 export default function DesignSystemPage() {
   return (
     <main className="flex-1 bg-neutral-50 px-4 py-8 sm:px-8 sm:py-12">
-      <div className="mx-auto flex max-w-[1240px] flex-col gap-5">
+      <div className="mx-auto flex max-w-[77.5rem] flex-col gap-5">
         <div className="grid gap-5 lg:grid-cols-2">
           <HeaderCard />
           <ColorsSection />
@@ -204,7 +207,7 @@ function TypographySection() {
     <SheetSection number="02" title="Typography">
       <div className="space-y-8">
         <div className="flex items-center gap-6">
-          <span className="font-display text-[64px] leading-none text-neutral-900">
+          <span className="font-display text-[4rem] leading-none text-neutral-900">
             Ag
           </span>
           <div>
@@ -215,7 +218,7 @@ function TypographySection() {
           </div>
         </div>
         <div className="flex items-center gap-6">
-          <span className="text-[64px] leading-none text-neutral-900">Ag</span>
+          <span className="text-[4rem] leading-none text-neutral-900">Ag</span>
           <div>
             <p className="text-heading-3 text-neutral-900">Inter</p>
             <p className="text-small text-neutral-500">
@@ -243,7 +246,7 @@ function TypeScaleSection() {
   return (
     <SheetSection number="03" title="Type Scale" className="lg:col-span-2">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[560px] border-collapse text-left">
+        <table className="w-full min-w-[35rem] border-collapse text-left">
           <thead>
             <tr className="border-b border-neutral-200 text-small text-neutral-500">
               <th className="py-2 pr-4 font-normal">Style</th>
@@ -358,7 +361,7 @@ function RadiusShadowSection() {
                 <p className="text-body font-medium text-neutral-900">
                   {shadow.label}
                 </p>
-                <p className="mt-1 break-words font-mono text-[10px] leading-snug text-neutral-500">
+                <p className="mt-1 break-words font-mono text-[0.625rem] leading-snug text-neutral-500">
                   {shadow.value}
                 </p>
               </div>
@@ -451,7 +454,7 @@ function ButtonsSection() {
     <SheetSection number="07" title="Buttons">
       <div className="space-y-6">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[420px] border-collapse text-left">
+          <table className="w-full min-w-[26.25rem] border-collapse text-left">
             <thead>
               <tr className="text-body text-neutral-500">
                 <th className="pb-3 pr-4 font-normal" />

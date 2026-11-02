@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "skills": {
+    "clerk": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk/SKILL.md",
+      "computedHash": "c5f37de2849cf786ecb594f3cf62e94cf7c5f5367d2e8174e2b3a7dd852d1225"
+    },
+    "clerk-android": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-android/SKILL.md",
+      "computedHash": "89bbd90683b00472ba781d293b34520a7891bf9ff3b7724bb9a5fbde8dce1ae9"
+    },
+    "clerk-astro-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-astro-patterns/SKILL.md",
+      "computedHash": "ad969f549408a9504c1568c535ffae1fe708ad0bf255d522d9e2fbed71b0628e"
+    },
+    "clerk-backend-api": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-backend-api/SKILL.md",
+      "computedHash": "f546f7a163670ff580271573e52e01f2a539fcbd6b3b2d6dd714656f60ee1a65"
+    },
+    "clerk-billing": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-billing/SKILL.md",
+      "computedHash": "8526f71bab956e3e401e554cee719614f50dbb482d85eef416b9ac82acc121e0"
+    },
+    "clerk-chrome-extension-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-chrome-extension-patterns/SKILL.md",
+      "computedHash": "279882f1d02be55a5edb8715328e5e6e2059e8ad16ea1ab3bb2c01275fe12f96"
+    },
+    "clerk-cli": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-cli/SKILL.md",
+      "computedHash": "4f5cb566f15639b0a3f58b2b2afea01583a1956e000d11f10be37484aac1ae87"
+    },
+    "clerk-custom-ui": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-custom-ui/SKILL.md",
+      "computedHash": "cd40d1f32200769778195d4228dd98dfb1553b6c0a2e42fd1bac5f7da5f8fa30"
+    },
+    "clerk-expo": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-expo/SKILL.md",
+      "computedHash": "268e6d6ea293c440d9a2fa4fd2a97828e9cbda1c66e2cc2cd7c4379a840f21cc"
+    },
+    "clerk-nextjs-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-nextjs-patterns/SKILL.md",
+      "computedHash": "1ad3e56310ce7cdbdd405f6f06f6517b640945cd90aa363950f4bee14e71a5a3"
+    },
+    "clerk-nuxt-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-nuxt-patterns/SKILL.md",
+      "computedHash": "25c785bbf5174a654daa7aa8d04b9f22a0cab9eb667f1e04ed071f49a528dad6"
+    },
+    "clerk-orgs": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-orgs/SKILL.md",
+      "computedHash": "a7684081f127e1ed710fc15463f938ea256ae594d39e2c3f70a441f4c4e9e016"
+    },
+    "clerk-react-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-react-patterns/SKILL.md",
+      "computedHash": "e6b7e52013ca836db3a8d901b3c116370da83970398b6f9d7d1e1138ba442be8"
+    },
+    "clerk-react-router-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-react-router-patterns/SKILL.md",
+      "computedHash": "767a21fd76f6cf186293cf027c7f7815c7bee8544ed788ef66cb23841b263948"
+    },
+    "clerk-setup": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-setup/SKILL.md",
+      "computedHash": "feaab931700f583c111e8b8711ccd811fedc4bbe00b280e9679c753ca758b2f0"
+    },
+    "clerk-swift": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-swift/SKILL.md",
+      "computedHash": "3d4c8c473c030b1d683ea3498baff2a86470bae05cd12fddebdee9c5d3b0aa2f"
+    },
+    "clerk-tanstack-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-tanstack-patterns/SKILL.md",
+      "computedHash": "0f8c3ad00724efa36a863295042ff79f08ba9d0203f43f4fb5e2582cd1ef5ca9"
+    },
+    "clerk-testing": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-testing/SKILL.md",
+      "computedHash": "7a103e04442822f0e8e11184e11e92fea143723817dba8c5f06fd71dab86c4ad"
+    },
+    "clerk-vue-patterns": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-vue-patterns/SKILL.md",
+      "computedHash": "39422e2655a33860fd37bd2ece88417e2662cd172b896ebd1f12dcc9c367aeee"
+    },
+    "clerk-webhooks": {
+      "source": "clerk/skills",
+      "sourceType": "github",
+      "skillPath": "skills/clerk-webhooks/SKILL.md",
+      "computedHash": "2e09a26af49fcd7081b9c370e9c2008f1ff5ee4474141fd2c693431358c9e4ec"
+    },
+    "content-experimentation-best-practices": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/content-experimentation-best-practices/SKILL.md",
+      "computedHash": "a30fd36724201a7b1bed2589984a87dabb9e955e48ab39281fd3f9631d0e5d6c"
+    },
+    "content-modeling-best-practices": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/content-modeling-best-practices/SKILL.md",
+      "computedHash": "7e2b080109bfc77dc16696da77dbe63786fe08f726e525b0704cf255fed49da9"
+    },
+    "create-agent-with-sanity-context": {
+      "source": "sanity-io/context",
+      "sourceType": "github",
+      "skillPath": "skills/create-agent-with-sanity-context/SKILL.md",
+      "computedHash": "63564a6c2393ba91062bc896afa266a2147b850e45e11959263de0b3fa22d287"
+    },
+    "dial-your-context": {
+      "source": "sanity-io/context",
+      "sourceType": "github",
+      "skillPath": "skills/dial-your-context/SKILL.md",
+      "computedHash": "04ff53eff9227bac193e5b8a3ff47d2b072c0ffb899cbb6d03d543372854df1e"
+    },
+    "portable-text-conversion": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/portable-text-conversion/SKILL.md",
+      "computedHash": "9e31a7851dcace0c3b085133711262e483385b95bd92866c3ba7ce43571d9b91"
+    },
+    "portable-text-serialization": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/portable-text-serialization/SKILL.md",
+      "computedHash": "96693a472132e56c6a3f472c240348249d3e513b7a8ffd0089a267574227598a"
+    },
+    "sanity-best-practices": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/sanity-best-practices/SKILL.md",
+      "computedHash": "ea29f00cdc8f8589111aa13a1913bd12d5c193ce88b9eb0750b28a4fd93e8c80"
+    },
+    "sanity-migration": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/sanity-migration/SKILL.md",
+      "computedHash": "8eefb3651b0da4caab43d3414388fd5db8e92e11bd5b7dc09da0fefcf24d4ee7"
+    },
+    "sanity-singletons": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/sanity-singletons/SKILL.md",
+      "computedHash": "13775c7b2945fdf0351494dc13c7e3ea02097bd93a3e0092b1b8ab8bdbb872cc"
+    },
+    "sanity-studio-upgrade": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/sanity-studio-upgrade/SKILL.md",
+      "computedHash": "62e7a28ae3ce0a4ba03ab51f0e0596899b468c8e4dab4cf1e68ac7eee0db7907"
+    },
+    "seo-aeo-best-practices": {
+      "source": "sanity-io/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/seo-aeo-best-practices/SKILL.md",
+      "computedHash": "b6b2dd3af3c92f82f04b830dab2cc323f299d7c2e57f7d3619a5886caa7eeb08"
+    },
+    "shape-your-agent": {
+      "source": "sanity-io/context",
+      "sourceType": "github",
+      "skillPath": "skills/shape-your-agent/SKILL.md",
+      "computedHash": "4e3b316bb57c939a6f298cef2dc65d2d0b196947ddfd32145a77b8adf84fc193"
+    }
+  }
+}

@@ -22,13 +22,13 @@ export function Navbar({ items = defaultItems, className, right }: NavbarProps) 
   return (
     <nav
       className={cn(
-        "flex items-center justify-between gap-6 border-b border-neutral-200 px-6 py-4",
+        "flex items-center justify-between gap-6 border-b border-neutral-200 px-6 py-4 sm:px-8",
         className,
       )}
     >
-      <Logo />
-      <div className="flex items-center gap-6">
-        <ul className="flex items-center gap-6">
+      <div className="flex items-center gap-10">
+        <Logo />
+        <ul className="hidden items-center gap-7 sm:flex">
           {items.map((item) => (
             <li key={item.label}>
               <a
@@ -46,8 +46,8 @@ export function Navbar({ items = defaultItems, className, right }: NavbarProps) 
             </li>
           ))}
         </ul>
-        {right}
       </div>
+      {right}
     </nav>
   );
 }
