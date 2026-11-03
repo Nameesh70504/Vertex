@@ -5,6 +5,30 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Clerk Authentication Setup
+
+### Questions
+
+1. Why are `<Show>`, `<SignIn>`, and `<SignUp>` wrapped in `<Suspense>` in this Next.js project?
+
+2. Which file serves as the Next.js 16 request middleware for Clerk, and what helper does it export?
+
+3. Where is `<ClerkProvider>` mounted in `app/layout.tsx`, and why is it placed inside `<body>` instead of around `<html>`?
+
+4. How does `Navbar` provide access to authentication controls for pages across the application?
+
+### Answer key
+
+1. `next.config.ts` enables `cacheComponents: true` (and partial prefetching). Next.js fails the production build if dynamic request-bound session state is read during static prerendering outside a React `<Suspense>` boundary.
+
+2. `proxy.ts` at the repo root; it exports `default clerkMiddleware()`.
+
+3. Inside `<body>` wrapping `{children}`. In current Clerk Next.js SDKs, `<ClerkProvider>` goes inside `<body>` rather than wrapping `<html>` to maintain proper HTML attribute and font hydration.
+
+4. `Navbar` defaults its `right` prop to `<AuthControls />` from `components/nav/auth-controls.tsx`, which renders styled Sign In/Sign Up buttons when signed out and the notifications bell + `<UserButton />` when signed in.
+
+---
+
 ## Fluid Desktop Scale
 
 ### Questions

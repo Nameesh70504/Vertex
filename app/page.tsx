@@ -1,4 +1,4 @@
-import { ArrowRight, Bell, Sparkle, User } from "lucide-react";
+import { ArrowRight, Sparkle } from "lucide-react";
 import { DockerLogo, NextjsLogo, TypeScriptLogo } from "@/components/brand/course-logos";
 import { CourseCard } from "@/components/cards/course-card";
 import { Navbar } from "@/components/nav/navbar";
@@ -14,24 +14,6 @@ export default function Home() {
           { label: "Courses", href: "#" },
           { label: "My Learning", href: "#" },
         ]}
-        right={
-          <div className="flex items-center gap-5">
-            <button
-              type="button"
-              aria-label="Notifications"
-              className="text-neutral-900 hover:text-primary-500"
-            >
-              <Bell className="h-6 w-6" aria-hidden="true" />
-            </button>
-            <span
-              role="img"
-              aria-label="Your profile"
-              className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-neutral-200 text-neutral-500"
-            >
-              <User className="h-5 w-5" aria-hidden="true" />
-            </span>
-          </div>
-        }
       />
 
       <main className="flex-1">

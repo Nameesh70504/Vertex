@@ -1,4 +1,5 @@
 import { Logo } from "@/components/brand/logo";
+import { AuthControls } from "@/components/nav/auth-controls";
 import { cn } from "@/lib/utils";
 
 export type NavItem = {
@@ -18,7 +19,11 @@ const defaultItems: NavItem[] = [
   { label: "My Learning", href: "#" },
 ];
 
-export function Navbar({ items = defaultItems, className, right }: NavbarProps) {
+export function Navbar({
+  items = defaultItems,
+  className,
+  right = <AuthControls />,
+}: NavbarProps) {
   return (
     <nav
       className={cn(
