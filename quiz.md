@@ -5,6 +5,34 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Sanity Content Model, Studio & Data Layer
+
+### Questions
+
+1. Which schema type represents curriculum modules, and why is it defined as an object rather than a document?
+
+2. How does a lesson resolve its parent course and calculate its ordinal position (e.g. Lesson 5.1 in Module 5) without storing a parent course reference?
+
+3. How is `SANITY_API_READ_TOKEN` prevented from leaking into client-side browser bundles while still enabling queries on a private dataset?
+
+4. In `sanity/structure.ts`, which documents are registered as primary list items in the Studio desk hierarchy?
+
+5. Why was `export const dynamic = 'force-static'` removed from `app/studio/[[...tool]]/page.tsx`?
+
+### Answer key
+
+1. `moduleType` in `sanity/schemaTypes/moduleType.ts` defines `module` as an object (`type: 'object'`). Per AGENTS.md §8, modules are embedded directly inside a `course` document's `modules` array because they only exist in the context of their specific course syllabus.
+
+2. In `sanity/lib/queries.ts` and `sanity/lib/data.ts`, `LESSON_BY_SLUG_QUERY` performs a reverse reference GROQ lookup: `"course": *[_type == "course" && references(^._id)][0]`. `getLessonBySlug()` traverses the course's modules and lessons to compute the zero-based `moduleIndex`, `lessonIndex`, and previous/next navigation links dynamically.
+
+3. `sanity/lib/token.ts` imports `server-only`, ensuring that any attempt to bundle it in a client component triggers a compilation error. Furthermore, `sanityFetch` in `sanity/lib/client.ts` only supplies the read token when running in a server execution environment (`process.env.SANITY_API_READ_TOKEN`).
+
+4. Courses (`course`), Lessons (`lesson`), Instructors (`instructor`), and Categories (`category`) are registered with distinct `@sanity/icons` in `sanity/structure.ts`.
+
+5. Next.js 16 compiler raises a Turbopack build error when `export const dynamic = 'force-static'` is used alongside `cacheComponents: true` in `next.config.ts`.
+
+---
+
 ## Clerk Authentication Setup
 
 ### Questions

@@ -1,7 +1,14 @@
-import type {StructureResolver} from 'sanity/structure'
+import type { StructureResolver } from 'sanity/structure'
+import { BookIcon, DocumentTextIcon, TagIcon, UserIcon } from '@sanity/icons'
 
-// https://www.sanity.io/docs/structure-builder-cheat-sheet
+// Custom Studio desk structure
 export const structure: StructureResolver = (S) =>
   S.list()
-    .title('Content')
-    .items(S.documentTypeListItems())
+    .title('Vertex Content')
+    .items([
+      S.documentTypeListItem('course').title('Courses').icon(BookIcon),
+      S.documentTypeListItem('lesson').title('Lessons').icon(DocumentTextIcon),
+      S.divider(),
+      S.documentTypeListItem('instructor').title('Instructors').icon(UserIcon),
+      S.documentTypeListItem('category').title('Categories').icon(TagIcon),
+    ])
