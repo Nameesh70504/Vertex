@@ -5,6 +5,18 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Lesson Page & Embedded Video Player (2026-11-07)
+
+1. **Provider video embed without off-site navigation.** Implemented `VideoEmbed` supporting YouTube embed URLs with `start` timestamp seeking (`?start=...` or `?t=...`). Per AGENTS.md §7, video playback stays on-site using the provider's embed player rather than redirecting to YouTube or building an expensive custom player.
+
+2. **Portable Text rendering with tailored styling.** Built `PortableTextRenderer` using `@portabletext/react` with custom styled headings, lists, blockquotes, code spans, and external links matching the typography tokens in Vertex design system.
+
+3. **Presentational Notes Tab.** Per AGENTS.md §7, implemented the Notes tab as an in-session note-taking notepad with local textarea editing without adding unwarranted backend database complexity.
+
+4. **Curriculum navigation across module boundaries.** Powered bottom footer navigation via pre-derived `navigation.previousLesson` and `navigation.nextLesson` in `sanity/lib/data.ts`. Automatically traverses across module boundaries so lessons transition smoothly from the last lesson of Module 1 to the first lesson of Module 2.
+
+---
+
 ## Course Catalog & Course Detail Pages (2026-11-07)
 
 1. **Replicate desktop reference `design/vertex-course.png` directly.** Structured the course detail page layout with breadcrumbs, brand cover image, POPULAR badge, duration/modules metadata, 2x2 "What you'll learn" outcome grid, interactive module accordion, and sticky bottom resume bar. Rejected: creating an arbitrary custom layout diverging from the design mock.

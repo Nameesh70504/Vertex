@@ -5,6 +5,30 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Lesson Page & Embedded Video Player
+
+### Questions
+
+1. How does `VideoEmbed` support deep-linking to a specific second in a lesson video?
+
+2. How are rich lesson notes authored in Sanity rendered in the web frontend?
+
+3. How does `LessonSidebar` determine which lesson should be highlighted as "Now playing"?
+
+4. Why is the "Notes" tab implemented without a backend database?
+
+### Answer key
+
+1. It parses the lesson video URL (YouTube, Vimeo, or Bunny) and injects the start parameter (e.g. `&start=${startSeconds}`) into the embedded player iframe URL when provided via search parameter `?start=...`.
+
+2. Using `PortableTextRenderer` which configures `@portabletext/react` with custom styled paragraph, heading, list, blockquote, code, and link components.
+
+3. It compares each lesson's `slug.current` with the active page's `activeLessonSlug` prop, applying active styles and rendering the "Now playing" label with a Play icon.
+
+4. Per AGENTS.md §7, surfaces like the lesson Notes tab, notifications bell, and My Learning page are presentational only to avoid overbuilding backend complexity beyond the product requirements.
+
+---
+
 ## Course Catalog & Course Detail Pages
 
 ### Questions
