@@ -105,3 +105,4 @@ Implement the Grounded AI Search Experience for **Vertex** at `/search?q=...`, r
 6. Test sorting by selecting "Duration" or "Title" in the sort dropdown.
 7. Test searching for a non-existent query (e.g. `/search?q=xyznonexistent`) and verify the empty state with link to `/courses`.
 8. Submit a new query from the search input on the Home page (`/`) and verify it routes to `/search?q=...`.
+

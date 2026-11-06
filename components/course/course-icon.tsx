@@ -119,3 +119,4 @@ export function CourseIcon({ title = '', slug = '', className = '' }: CourseIcon
     </span>
   )
 }
+

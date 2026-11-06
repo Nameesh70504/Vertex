@@ -92,3 +92,4 @@ export function LessonResultCard({ result }: LessonResultCardProps) {
     </article>
   )
 }
+

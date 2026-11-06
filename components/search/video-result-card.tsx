@@ -109,3 +109,4 @@ export function VideoResultCard({ result }: VideoResultCardProps) {
     </article>
   )
 }
+
