@@ -36,3 +36,20 @@ export function formatStudentCount(count?: number): string {
   return count.toLocaleString()
 }
 
+/**
+ * Format timestamp into standard mm:ss or hh:mm:ss for video player seeking (e.g. "12:45", "08:32")
+ */
+export function formatTimestamp(seconds?: number): string {
+  if (!seconds || seconds <= 0) return '00:00'
+  const s = Math.floor(seconds)
+  const hours = Math.floor(s / 3600)
+  const minutes = Math.floor((s % 3600) / 60)
+  const remainingSeconds = s % 60
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+  }
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+}
+
+

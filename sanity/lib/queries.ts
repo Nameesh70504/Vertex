@@ -201,3 +201,72 @@ export const CATEGORIES_QUERY = defineQuery(`
   }
 `)
 
+/**
+ * Search lessons and video intelligence documents matching keyword patterns
+ */
+export const SEARCH_CONTENT_QUERY = defineQuery(`
+  {
+    "lessons": *[_type == "lesson" && (
+      title match $pattern ||
+      pt::text(notes) match $pattern ||
+      keyPoints[] match $pattern
+    )] {
+      _id,
+      title,
+      slug,
+      duration,
+      keyPoints,
+      "notesText": pt::text(notes),
+      "course": *[_type == "course" && references(^._id)][0] {
+        _id,
+        title,
+        slug,
+        modules[] {
+          _key,
+          title,
+          lessons[]-> {
+            _id,
+            slug
+          }
+        }
+      }
+    },
+    "videos": *[_type == "video" && (
+      chapters[].label match $pattern ||
+      chunks[].text match $pattern ||
+      title match $pattern
+    )] {
+      _id,
+      videoId,
+      title,
+      url,
+      duration,
+      "matchingChapters": chapters[label match $pattern],
+      "matchingChunks": chunks[text match $pattern][0...3],
+      "lesson": *[_type == "lesson" && (videoUrl == ^.url || videoUrl match ("*" + ^.videoId + "*"))][0] {
+        _id,
+        title,
+        slug,
+        thumbnail,
+        duration,
+        keyPoints,
+        "notesText": pt::text(notes),
+        "course": *[_type == "course" && references(^._id)][0] {
+          _id,
+          title,
+          slug,
+          modules[] {
+            _key,
+            title,
+            lessons[]-> {
+              _id,
+              slug
+            }
+          }
+        }
+      }
+    }
+  }
+`)
+
+

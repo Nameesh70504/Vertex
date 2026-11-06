@@ -5,6 +5,41 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Grounded AI Search Experience (2026-11-07)
+
+### Entry point
+
+- Server page route: `app/search/page.tsx` handling `searchParams.q` and `searchParams.sort`.
+- API endpoint: `app/api/search/route.ts` handling GET and POST search requests.
+
+### Render / call chain
+
+1. User submits query from `app/page.tsx`, `app/courses/page.tsx`, or `app/search/page.tsx` via `SearchInput` or form submit.
+2. `app/search/page.tsx`:
+   - Awaits `searchParams` (`q`, `sort`).
+   - Calls `searchContent(query, sort)` in `sanity/lib/data.ts`.
+3. `sanity/lib/data.ts` — `searchContent(query, sort)`:
+   - Tokenizes and cleans keywords.
+   - Executes `SEARCH_CONTENT_QUERY` in `sanity/lib/queries.ts` via server-only `sanityFetch` using private dataset token.
+   - Performs two-stage timestamp resolution for video matches: authored `chapters` (table of contents) checked first; if matched, takes `startSeconds` and label; otherwise falls back to transcript `chunks` for `startSeconds` and excerpt.
+   - Resolves reverse-references: connects video back to lesson, and lesson back to parent course and module order.
+   - Computes relevance scoring (title match +100/50, chapter match +80, transcript chunk match +40, keyPoints +25, notes +10).
+   - Sorts results by `relevance` (default), `duration`, or `title`.
+   - Computes total results count and unique course count.
+4. Renders `components/search/search-results-client.tsx`:
+   - Interactive search header with Playfair Display typography and highlighted query.
+   - `VideoResultCard` (`components/search/video-result-card.tsx`): renders thumbnail with play button overlay, duration badge, course emblem/title, `VIDEO` badge, module label, and `▶ Watch from mm:ss >` deep link with `?start=` seconds query parameter.
+   - `LessonResultCard` (`components/search/lesson-result-card.tsx`): renders key points checklist box, completion checkmark, course emblem/title, `LESSON` badge, module label, and `View lesson ↗ >` link.
+   - Sort selector (`Most Relevant`, `Duration`, `Title`).
+   - Empty state when no matches, pointing to course catalog.
+   - Bottom callout card "Can't find what you're looking for?" linking to `/courses`.
+
+### Where it ends
+
+- Learner clicks `Watch from mm:ss >` and lands on `/courses/[courseSlug]/lessons/[lessonSlug]?start=[seconds]` where `VideoEmbed` automatically plays the video at the exact second taught.
+
+---
+
 ## Video Document Schema & Offline Ingestion Tooling (2026-11-07)
 
 ### Entry point

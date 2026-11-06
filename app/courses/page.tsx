@@ -51,12 +51,12 @@ export default async function CoursesPage() {
             Deep-dive courses with video lessons, real-world notes, and intelligent instant search across every second taught.
           </p>
 
-          <div className="mt-8 max-w-xl">
+          <form action="/search" method="GET" className="mt-8 max-w-xl">
             <SearchInput
               size="md"
               placeholder="Filter courses by topic or concept…"
             />
-          </div>
+          </form>
 
           {/* Category Pills */}
           <div className="mt-8 flex flex-wrap gap-2 border-b border-neutral-200 pb-6">
