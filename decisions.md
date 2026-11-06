@@ -5,6 +5,20 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Grounded AI Search Experience (2026-11-07)
+
+1. **Two-Stage Timestamp Resolution (§7).** For video moment matching, authored chapter markers (`chapters[]`) are checked first because table of contents labels are clean, precise topic boundaries. Only if no chapter matches does the engine fall back to matching transcript segments (`chunks[]`). Alternative rejected: matching both simultaneously without priority — transcript text is noisier and would frequently overshadow clean chapter boundaries.
+
+2. **Grounded dual-query model (lessons & video moments).** Search queries both `lesson` documents (by title, notes plain-text projection, and key points) and `video` documents (by chapters, chunks, and title), merging the candidate sets into two distinct visual card types matching `design/vertex-search.png`. Alternative rejected: returning only lessons without video moments, or returning raw videos without associating them to the lesson curriculum.
+
+3. **Server-side private dataset read with token isolation (§5, §12).** Search queries run strictly through server route / server components with `SANITY_API_READ_TOKEN`. Client components receive already-formatted result cards and never possess Sanity read tokens or call MCP/LLMs directly. Alternative rejected: client-side Sanity fetching — leaks access tokens to the browser bundle and violates architectural boundaries.
+
+4. **URL-driven query and sort state.** Search query and sort criteria are persisted in `searchParams` (`/search?q=...&sort=...`), enabling direct bookmarking, shareable search URLs, and native browser navigation without state loss. Alternative rejected: in-memory component state only — loses search state on refresh and breaks back-button navigation.
+
+5. **Keyboard accessibility with global ⌘K / Ctrl+K.** Added a window keyboard listener for `(e.metaKey || e.ctrlKey) && e.key === 'k'` to automatically focus and select the search input on the results page, matching the visible `⌘K` badge in the design. Alternative rejected: visual badge only without interactive keyboard handler.
+
+---
+
 ## Video Document Schema & Offline Ingestion Tooling (2026-11-07)
 
 1. **Dedicated `video` document, not embedded in `lesson`.** Video intelligence (chapters + transcript chunks) lives in its own document type keyed by provider + video ID. This keeps lessons clean, avoids duplicating data when two lessons share a video, and lets the ingestion pipeline run independently. Alternative rejected: embedding chapters/chunks directly in each lesson document — that couples ingestion to content authoring and duplicates data.

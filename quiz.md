@@ -5,6 +5,34 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Grounded AI Search Experience
+
+### Questions
+
+1. In the search engine's two-stage timestamp resolution, which source is matched first, and what is the fallback?
+
+2. What query parameter does the video result card append to the lesson URL to enable instant deep-link playback at the matched second?
+
+3. How are Portable Text lesson notes queried for keyword matching in GROQ?
+
+4. Why are video intelligence documents treated as an internal lookup rather than returned directly as isolated search results?
+
+5. What keyboard shortcut allows learners to immediately focus and edit the search input?
+
+### Answer key
+
+1. Authored chapters (`chapters[]`) representing table of contents markers are checked first; if no chapter matches, the engine falls back to matching transcript segments (`chunks[]`). See `searchContent()` in [`sanity/lib/data.ts`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/sanity/lib/data.ts).
+
+2. It appends `?start=[seconds]` (e.g. `?start=65` for 1:05), which `VideoEmbed` consumes to start playback at that exact second. See [`components/search/video-result-card.tsx`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/components/search/video-result-card.tsx).
+
+3. Using the GROQ projection `pt::text(notes)` which extracts plain text from rich Portable Text blocks before applying the `match` operator. See [`sanity/lib/queries.ts`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/sanity/lib/queries.ts).
+
+4. Per AGENTS.md §7, search is curriculum-grounded. A video result must always be presented in the context of the lesson and course that teaches it, carrying the course title, module label (e.g. `Lesson 5.1 · Data Fetching & Caching`), and link to the lesson page.
+
+5. `⌘K` on macOS or `Ctrl+K` on Windows/Linux. Handled via a window `keydown` listener in [`components/search/search-results-client.tsx`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/components/search/search-results-client.tsx).
+
+---
+
 ## Video Document Schema & Offline Ingestion Tooling
 
 ### Questions

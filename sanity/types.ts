@@ -155,3 +155,49 @@ export interface VideoDocument {
   chunks?: VideoChunk[]
 }
 
+export interface VideoSearchResult {
+  type: 'video'
+  id: string
+  title: string
+  description: string
+  courseTitle: string
+  courseSlug: string
+  courseIcon?: string
+  lessonTitle: string
+  lessonSlug: string
+  moduleTitle: string
+  moduleNumber: number
+  lessonNumber: string // e.g. "5.1"
+  thumbnailUrl?: string
+  duration: number
+  startSeconds: number
+  matchSource: 'chapter' | 'transcript'
+  matchedText?: string
+}
+
+export interface LessonSearchResult {
+  type: 'lesson'
+  id: string
+  title: string
+  description: string
+  courseTitle: string
+  courseSlug: string
+  courseIcon?: string
+  lessonSlug: string
+  moduleTitle: string
+  moduleNumber: number
+  lessonNumber: string
+  duration: number
+  keyPoints: string[]
+}
+
+export type SearchResultItem = VideoSearchResult | LessonSearchResult
+
+export interface SearchResponse {
+  query: string
+  totalCount: number
+  courseCount: number
+  results: SearchResultItem[]
+}
+
+

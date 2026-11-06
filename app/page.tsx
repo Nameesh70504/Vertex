@@ -41,12 +41,12 @@ export default async function Home() {
               </Button>
             </Link>
           </div>
-          <div className="mx-auto mt-10 max-w-3xl">
+          <form action="/search" method="GET" className="mx-auto mt-10 max-w-3xl">
             <SearchInput
               size="lg"
               placeholder="Ask anything about your learning…"
             />
-          </div>
+          </form>
         </section>
 
         <div className="mx-auto w-full max-w-[70.5rem] px-6">

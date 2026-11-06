@@ -31,7 +31,7 @@ export function SearchInput({
   placeholder = "Search anything…",
   className,
   defaultValue,
-  name,
+  name = "q",
   size = "md",
 }: SearchInputProps) {
   const s = sizes[size];
