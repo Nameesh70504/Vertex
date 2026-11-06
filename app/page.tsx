@@ -1,17 +1,22 @@
+import Link from "next/link";
 import { ArrowRight, Sparkle } from "lucide-react";
-import { DockerLogo, NextjsLogo, TypeScriptLogo } from "@/components/brand/course-logos";
 import { CourseCard } from "@/components/cards/course-card";
 import { Navbar } from "@/components/nav/navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
+import { formatDuration } from "@/lib/format";
+import { getCourses } from "@/sanity/lib/data";
 
-export default function Home() {
+export default async function Home() {
+  const courses = await getCourses();
+  const featuredCourses = courses.slice(0, 6);
+
   return (
     <div className="flex flex-1 flex-col bg-white">
       <Navbar
         items={[
-          { label: "Courses", href: "#" },
+          { label: "Courses", href: "/courses" },
           { label: "My Learning", href: "#" },
         ]}
       />
@@ -29,10 +34,12 @@ export default function Home() {
             across all your courses.
           </p>
           <div className="mt-8 flex justify-center">
-            <Button className="h-14 gap-2 px-7 text-[1rem]">
-              Explore Courses
-              <ArrowRight className="h-5 w-5" aria-hidden="true" />
-            </Button>
+            <Link href="/courses">
+              <Button className="h-14 gap-2 px-7 text-[1rem]">
+                Explore Courses
+                <ArrowRight className="h-5 w-5" aria-hidden="true" />
+              </Button>
+            </Link>
           </div>
           <div className="mx-auto mt-10 max-w-3xl">
             <SearchInput
@@ -51,46 +58,34 @@ export default function Home() {
             <h2 className="font-display text-heading-1 text-neutral-900">
               All Courses
             </h2>
-            <a
-              href="#"
+            <Link
+              href="/courses"
               className="inline-flex items-center gap-2 text-body font-medium text-primary-500 hover:text-primary-600"
             >
               View all courses
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </a>
+            </Link>
           </div>
 
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <CourseCard
-              title="Next.js for Production"
-              description="Build scalable, high-performance web applications with Next.js."
-              logo={<NextjsLogo />}
-              level="Intermediate"
-              duration="18h 24m"
-              modules="12 modules"
-              href="#"
-              className="h-full"
-            />
-            <CourseCard
-              title="Docker Essentials"
-              description="Containerize applications and streamline your development workflow."
-              logo={<DockerLogo />}
-              level="Beginner"
-              duration="10h 12m"
-              modules="8 modules"
-              href="#"
-              className="h-full"
-            />
-            <CourseCard
-              title="TypeScript Deep Dive"
-              description="Go beyond the basics and write safer, more expressive code."
-              logo={<TypeScriptLogo />}
-              level="Intermediate"
-              duration="14h 36m"
-              modules="10 modules"
-              href="#"
-              className="h-full"
-            />
+            {featuredCourses.map((course) => {
+              const moduleCount = course.modules?.length || 0;
+              const durationFormatted = formatDuration(course.totalDuration);
+
+              return (
+                <CourseCard
+                  key={course._id}
+                  title={course.title}
+                  description={course.summary || ""}
+                  logoText={course.title.charAt(0)}
+                  level={course.level || "All Levels"}
+                  duration={durationFormatted}
+                  modules={`${moduleCount} modules`}
+                  href={`/courses/${course.slug.current}`}
+                  className="h-full transition-shadow hover:shadow-md"
+                />
+              );
+            })}
           </div>
         </section>
 
