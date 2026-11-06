@@ -130,3 +130,28 @@ export interface LessonWithCourse extends Lesson {
   lessonIndex?: number
   navigation?: LessonNavigation
 }
+
+export interface VideoChapter {
+  _key?: string
+  startSeconds: number
+  label: string
+}
+
+export interface VideoChunk {
+  _key?: string
+  startSeconds: number
+  text: string
+}
+
+export interface VideoDocument {
+  _id: string
+  _type: 'video'
+  videoId: string
+  url: string
+  title?: string
+  provider: 'youtube' | 'vimeo' | 'bunny' | string
+  duration?: number
+  chapters?: VideoChapter[]
+  chunks?: VideoChunk[]
+}
+

@@ -5,6 +5,20 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Video Document Schema & Offline Ingestion Tooling (2026-11-07)
+
+1. **Dedicated `video` document, not embedded in `lesson`.** Video intelligence (chapters + transcript chunks) lives in its own document type keyed by provider + video ID. This keeps lessons clean, avoids duplicating data when two lessons share a video, and lets the ingestion pipeline run independently. Alternative rejected: embedding chapters/chunks directly in each lesson document — that couples ingestion to content authoring and duplicates data.
+
+2. **Document ID convention: `video.youtube_<id>`.** Using a deterministic ID derived from the provider and video ID makes the pipeline idempotent (re-running replaces the same documents) and allows direct lookups without querying. Alternative rejected: auto-generated Sanity IDs — would require a lookup query every time and break idempotency.
+
+3. **Synthetic transcript chunks from lesson metadata.** Since the pipeline is offline tooling for a seeded demo dataset (no YouTube API key to fetch real captions), chunks are generated from lesson key points and notes text cycled through narrative seed sentences in 25-second windows. This produces realistic keyword-matchable content. Alternative rejected: empty/placeholder chunks — would make search testing impossible.
+
+4. **Chapters derived from key points.** Table of contents entries are evenly spaced across the video duration, one per lesson key point plus an intro. This mirrors real chapter markers and enables the two-stage timestamp resolution (chapters first, transcript fallback) specified in AGENTS.md §7. Alternative rejected: random timestamps — would produce incoherent chapter placement.
+
+5. **NDJSON file output for repeatable import.** The script writes `videos.ndjson` rather than using the Sanity write client directly. This keeps the pipeline simple, reproducible, and compatible with the same `sanity dataset import` workflow used for seed content. Alternative rejected: direct Sanity client mutations — adds API token management to the script and makes it harder to inspect/debug the output.
+
+---
+
 ## Lesson Page & Embedded Video Player (2026-11-07)
 
 1. **Provider video embed without off-site navigation.** Implemented `VideoEmbed` supporting YouTube embed URLs with `start` timestamp seeking (`?start=...` or `?t=...`). Per AGENTS.md §7, video playback stays on-site using the provider's embed player rather than redirecting to YouTube or building an expensive custom player.

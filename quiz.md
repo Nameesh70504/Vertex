@@ -5,6 +5,34 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Video Document Schema & Offline Ingestion Tooling
+
+### Questions
+
+1. What is the document ID convention for video documents, and why is it deterministic?
+
+2. How does the ingestion script avoid duplicating video documents when multiple lessons share the same YouTube video?
+
+3. What two arrays does each `video` document carry, and what is each one's role in the search pipeline?
+
+4. How are transcript chunks bounded to avoid overflowing the LLM context window during search?
+
+5. In the two-stage timestamp resolution, which source is matched first — chapters or transcript chunks — and why?
+
+### Answer key
+
+1. IDs follow `video.youtube_<id>` (see `sanitizeId()` in [`scripts/ingest-videos.ts`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/scripts/ingest-videos.ts#L51-L55)). Deterministic IDs make re-imports idempotent — the same video always maps to the same document ID.
+
+2. The script tracks processed video IDs in a `processedVideoIds` Set ([line 99](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/scripts/ingest-videos.ts#L99-L103)). If a video ID has already been processed, it's skipped.
+
+3. `chapters` (table of contents with `{ startSeconds, label }`) and `chunks` (transcript segments with `{ startSeconds, text }`). Chapters provide clean topic markers for search; chunks provide the noisier transcript fallback. See [`videoType.ts`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/studio/schemaTypes/videoType.ts).
+
+4. Each chunk covers a ~25-second window (`chunkWindow = 25` at [line 133](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/scripts/ingest-videos.ts#L133)). GROQ queries return only filtered matching chunks, never the full array, per AGENTS.md §12.
+
+5. Chapters are matched first because their labels are clean, authored topic markers. Transcript chunks are the noisier backstop used only when no chapter matches (AGENTS.md §7).
+
+---
+
 ## Lesson Page & Embedded Video Player
 
 ### Questions
