@@ -5,6 +5,18 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Course Catalog & Course Detail Pages (2026-11-07)
+
+1. **Replicate desktop reference `design/vertex-course.png` directly.** Structured the course detail page layout with breadcrumbs, brand cover image, POPULAR badge, duration/modules metadata, 2x2 "What you'll learn" outcome grid, interactive module accordion, and sticky bottom resume bar. Rejected: creating an arbitrary custom layout diverging from the design mock.
+
+2. **Server-rendered page with `generateStaticParams`.** Pre-rendered course detail routes using `getCourseSlugs()` in `app/courses/[slug]/page.tsx` for fast edge delivery while preserving real-time revalidation tags. Rejected: client-side data fetching with hooks.
+
+3. **Dynamic Lucide icon mapping for learning outcomes.** Created a lookup in `components/course/what-youll-learn.tsx` mapping icon identifiers stored in Sanity (e.g. `layers`, `database`, `cloud`, `shield`, `brain`) to their corresponding Lucide SVG components with fallback to `Layers`. Rejected: hardcoding fixed icons or embedding raw SVGs in Sanity documents.
+
+4. **Syllabus accordion with smart overflow.** Expanded the first module by default and capped initial display to 6 modules with an expand button for larger curriculums. Rejected: expanding all modules simultaneously which creates excessive vertical scrolling.
+
+---
+
 ## Standalone Studio Workspace Migration (2026-11-05)
 
 1. **Extract Studio into standalone `studio/` workspace.** Separated Sanity Studio authoring from the Next.js web application into its own workspace per AGENTS.md §5 and Sanity best practices. Preserves Vite fast compilation, auto-updates, independent deployments, and uncouples Studio tooling from Next.js compiler cycles. Rejected: keeping embedded Studio at `app/studio/[[...tool]]/page.tsx`.

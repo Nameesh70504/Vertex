@@ -5,6 +5,39 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Course Catalog & Course Detail Pages (2026-11-07)
+
+### Entry point
+
+- Catalog page: `app/courses/page.tsx` displaying the complete 10-course catalog.
+- Course detail page: `app/courses/[slug]/page.tsx` rendering the syllabus and course details matching `design/vertex-course.png`.
+- Home page integration: `app/page.tsx` dynamically querying live Sanity courses.
+
+### Call chain
+
+1. **Course Detail Page Rendering (`/courses/[slug]`):**
+   - User navigates to `/courses/[slug]`.
+   - `generateStaticParams()` calls `getCourseSlugs()` in `sanity/lib/data.ts` to pre-render valid course paths.
+   - `generateMetadata()` calls `getCourseBySlug(slug)` to derive dynamic SEO page metadata.
+   - The Server Component calls `getCourseBySlug(slug)` executing `COURSE_BY_SLUG_QUERY` with `SANITY_API_READ_TOKEN`.
+   - The page renders the breadcrumb (`All Courses > [Title]`), hero header (with cover image, POPULAR badge, duration, modules, and student count), `<WhatYoullLearn />` (2x2 grid of `learningOutcomes`), `<CourseSyllabus />` (collapsible module accordion with lesson durations and free preview badges), instructor bio, and the sticky bottom resume bar.
+   - "Start Learning" and "Continue Learning" buttons resolve the first lesson URL (`/courses/[slug]/lessons/[firstLessonSlug]`).
+
+2. **Catalog Page (`/courses`):**
+   - Server Component invokes `Promise.all([getCourses(), getCategories()])`.
+   - Renders category pill filters and responsive 3-column grid of `CourseCard` components linked to `/courses/[slug]`.
+
+### Import graph
+
+- `app/courses/[slug]/page.tsx` -> `sanity/lib/data.ts` -> `components/course/course-syllabus.tsx` -> `components/course/what-youll-learn.tsx` -> `lib/format.ts` -> `sanity/lib/image.ts`
+- `app/courses/page.tsx` -> `sanity/lib/data.ts` -> `components/cards/course-card.tsx` -> `lib/format.ts`
+
+### Notable internal branches
+
+- **Dynamic Module Accordion State:** `CourseSyllabus` client component maintains independent toggle state per module, expands the first module by default, and provides a toggle button when module count exceeds 6.
+
+---
+
 ## Standalone Studio Workspace Migration (2026-11-05)
 
 ### Entry point

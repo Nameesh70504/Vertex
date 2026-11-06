@@ -5,6 +5,30 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Course Catalog & Course Detail Pages
+
+### Questions
+
+1. Which function generates static parameters for all course pages during build time in `app/courses/[slug]/page.tsx`?
+
+2. How does the "Start Learning" call-to-action button determine which lesson to navigate to when clicked on the course detail page?
+
+3. How does `components/course/what-youll-learn.tsx` map icon string identifiers from Sanity to Lucide SVG components?
+
+4. How does `components/course/course-syllabus.tsx` calculate total module and curriculum durations?
+
+### Answer key
+
+1. `generateStaticParams()` calls `getCourseSlugs()` from `sanity/lib/data.ts` to return an array of `{ slug }` objects.
+
+2. It reads `course.modules?.[0]?.lessons?.[0]?.slug?.current` to construct the direct route `/courses/[courseSlug]/lessons/[firstLessonSlug]`.
+
+3. It defines an `iconMap` record mapping lowercase strings (e.g. `'layers'`, `'database'`, `'gauge'`, `'cloud'`, `'brain'`, `'shield'`) to Lucide icon components, falling back to `Layers` if no match is found.
+
+4. It reduces over `modules` and their nested `lessons` arrays, summing `lesson.duration` in seconds and formatting the result with `formatDuration()` from `lib/format.ts`.
+
+---
+
 ## Standalone Studio Workspace Migration
 
 ### Questions
