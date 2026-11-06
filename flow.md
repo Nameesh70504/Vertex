@@ -5,6 +5,32 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Lesson Page & Embedded Video Player (2026-11-07)
+
+### Entry point
+
+- Lesson page route: `app/courses/[courseSlug]/lessons/[lessonSlug]/page.tsx` rendering the full lesson experience matching `design/vertex-lesson.png`.
+
+### Call chain
+
+1. **Lesson Data Resolution & Reverse Reference:**
+   - User navigates to `/courses/[courseSlug]/lessons/[lessonSlug]` with optional `?start=[seconds]` timestamp.
+   - `getLessonBySlug(lessonSlug)` queries Sanity with `LESSON_BY_SLUG_QUERY`.
+   - The query resolves the reverse-referenced parent course (`*[_type == "course" && references(^._id)][0]`), instructor, and syllabus hierarchy.
+   - Data layer derives `moduleIndex`, `lessonIndex`, and `navigation` (`previousLesson`, `nextLesson`).
+
+2. **Component Composition:**
+   - **Sidebar (`LessonSidebar`):** Left navigation panel displaying course progress and collapsible curriculum modules. Automatically highlights the active module and marks the current lesson with "Now playing" and a play indicator.
+   - **Video Embed (`VideoEmbed`):** Parses the lesson's YouTube URL, applies `startSeconds` query param, and embeds the YouTube player on-site without navigation away from the platform.
+   - **Lesson Tabs (`LessonTabs`):** Switches between "Lesson Content" (Portable Text overview notes, key points checklist, pro tip card, resources grid) and "Notes" (presentational personal note-taking pad).
+   - **Footer Navigation (`LessonFooter`):** Displays previous and next lesson links with curriculum titles and durations.
+
+### Import graph
+
+- `app/courses/[courseSlug]/lessons/[lessonSlug]/page.tsx` -> `components/lesson/lesson-sidebar.tsx` -> `components/lesson/video-embed.tsx` -> `components/lesson/lesson-tabs.tsx` -> `components/lesson/portable-text-renderer.tsx` -> `components/lesson/lesson-footer.tsx` -> `sanity/lib/data.ts`
+
+---
+
 ## Course Catalog & Course Detail Pages (2026-11-07)
 
 ### Entry point
