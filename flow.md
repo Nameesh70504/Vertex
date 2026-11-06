@@ -5,6 +5,37 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Video Document Schema & Offline Ingestion Tooling (2026-11-07)
+
+### Entry point
+
+- Offline CLI: `npm run ingest:videos` → `npx tsx scripts/ingest-videos.ts`.
+
+### Call chain
+
+1. `scripts/ingest-videos.ts` — `generateVideoDocuments()`:
+   - Reads `script/seed/videos.json` (120 YouTube video metadata entries keyed by lesson slug).
+   - Reads `script/seed/seed.ndjson`, filters `_type === 'lesson'` lines, builds a `lessonsBySlug` map.
+   - For each unique video ID, extracts `keyPoints` and notes text from the matching lesson.
+   - Generates `chapters[]` (table of contents): intro chapter at 0s, then one chapter per key point evenly spaced.
+   - Generates `chunks[]` (transcript segments): 25-second windows cycling through narrative seeds built from the lesson's notes and key points.
+   - Assigns document ID via `sanitizeId('youtube', videoId)` → `video.youtube_<id>`.
+2. Writes all 120 `VideoDocument` objects as NDJSON to `script/seed/videos.ndjson`.
+3. Import via `npx sanity dataset import script/seed/videos.ndjson production --replace`.
+
+### Schema registration
+
+- `studio/schemaTypes/videoType.ts` defines the `video` document type with `chapters` and `chunks` arrays.
+- `studio/schemaTypes/index.ts` registers `videoType` in the schema types array.
+- `studio/structure.ts` adds a "Videos (Intelligence)" desk item under a PlayIcon.
+
+### Where it ends
+
+- 120 `video` documents in the Sanity `production` dataset, each with populated `chapters` and `chunks`.
+- TypeScript types in `sanity/types.ts`: `VideoDocument`, `VideoChapter`, `VideoChunk`.
+
+---
+
 ## Lesson Page & Embedded Video Player (2026-11-07)
 
 ### Entry point
