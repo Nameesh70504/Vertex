@@ -5,6 +5,26 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Standalone Studio Workspace Migration
+
+### Questions
+
+1. Where does the Sanity Studio authoring environment reside now, and what engine powers its development server?
+
+2. Why is a standalone Studio workspace preferred over embedding it in the Next.js App Router?
+
+3. How does the standalone Studio in `studio/sanity.cli.ts` discover schema queries and generate TypeScript definitions for the web app?
+
+### Answer key
+
+1. In the `studio/` workspace directory, powered independently by Vite (`npm --prefix studio run dev` at `http://localhost:3333`).
+
+2. Per AGENTS.md §5 and Sanity best practices, a standalone Studio preserves independent deployments, fast Vite compilation, auto-updates, and avoids tying Studio updates to Next.js compiler cycles or bundling errors.
+
+3. In `studio/sanity.cli.ts`, TypeGen is configured with `path: '../sanity/**/*.{ts,tsx,js,jsx}'`, `schema: './schemaTypes'`, and outputs the generated types file to `../sanity.types.ts`.
+
+---
+
 ## Sanity Content Model, Studio & Data Layer
 
 ### Questions

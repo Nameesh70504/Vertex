@@ -12,3 +12,4 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('instructor').title('Instructors').icon(UserIcon),
       S.documentTypeListItem('category').title('Categories').icon(TagIcon),
     ])
+
