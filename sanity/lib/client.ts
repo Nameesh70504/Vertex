@@ -34,3 +34,19 @@ export async function sanityFetch<T>({
     },
   })
 }
+
+/**
+ * Server-only client for performing mutations (progress tracking, etc.).
+ * Uses SANITY_API_WRITE_TOKEN, falling back to SANITY_API_READ_TOKEN if it has write permissions.
+ */
+export function getSanityWriteClient() {
+  const token = process.env.SANITY_API_WRITE_TOKEN || process.env.SANITY_API_READ_TOKEN
+  if (!token) {
+    throw new Error('Sanity write token is missing in environment variables.')
+  }
+  return client.withConfig({
+    token,
+    useCdn: false,
+  })
+}
+

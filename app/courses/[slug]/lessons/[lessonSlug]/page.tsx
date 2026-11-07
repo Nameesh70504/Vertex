@@ -11,6 +11,8 @@ import { LessonSidebar } from '@/components/lesson/lesson-sidebar'
 import { VideoEmbed } from '@/components/lesson/video-embed'
 import { LessonTabs } from '@/components/lesson/lesson-tabs'
 import { LessonFooter } from '@/components/lesson/lesson-footer'
+import { MarkCompleteButton } from '@/components/progress/mark-complete-button'
+import { LessonProgressProvider } from '@/components/progress/lesson-progress-context'
 import { formatDuration, formatStudentCount } from '@/lib/format'
 import { getLessonBySlug } from '@/sanity/lib/data'
 
@@ -69,6 +71,11 @@ export default async function LessonPage({
     })),
   }))
 
+  const totalLessons = modules.reduce(
+    (acc, m) => acc + (m.lessons?.length || 0),
+    0
+  )
+
   return (
     <div className="flex min-h-screen flex-1 flex-col bg-white">
       <Navbar
@@ -78,79 +85,90 @@ export default async function LessonPage({
         ]}
       />
 
-      <div className="flex-1 flex flex-col lg:flex-row mx-auto w-full max-w-[90rem]">
-        {/* Left Module / Curriculum Sidebar */}
-        <LessonSidebar
-          courseSlug={courseSlug}
-          courseTitle={lesson.course.title}
-          modules={modules}
-          activeLessonSlug={lessonSlug}
-          activeModuleIndex={moduleIndex}
-        />
-
-        {/* Main Lesson Content Area */}
-        <main className="flex-1 min-w-0 px-6 py-8 lg:px-10">
-          <Breadcrumbs
-            items={[
-              { label: 'All Courses', href: '/courses' },
-              { label: lesson.course.title, href: `/courses/${courseSlug}` },
-              { label: currentModuleTitle },
-              { label: lesson.title },
-            ]}
-          />
-
-          {/* Lesson Header */}
-          <div className="mt-6 flex flex-col gap-2">
-            <div className="flex items-center justify-between gap-4">
-              <Badge variant="popular" className="font-semibold tracking-wider text-xs uppercase">
-                Lesson {moduleIndex + 1}.{lessonIndex + 1}
-              </Badge>
-              <Button variant="secondary" size="md" className="gap-1.5 text-xs text-neutral-600">
-                <Bookmark className="h-3.5 w-3.5" />
-                Bookmark
-              </Button>
-            </div>
-
-            <h1 className="mt-2 font-display text-display-2 font-bold text-neutral-900 leading-tight">
-              {lesson.title}
-            </h1>
-
-            {/* Metadata row */}
-            <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2 text-small text-neutral-500">
-              <span className="inline-flex items-center gap-1.5">
-                <Clock className="h-4 w-4 text-neutral-400" />
-                {formatDuration(lesson.duration)}
-              </span>
-              <span className="inline-flex items-center gap-1.5 capitalize">
-                <BarChart3 className="h-4 w-4 text-neutral-400" />
-                Intermediate
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Users className="h-4 w-4 text-neutral-400" />
-                {formatStudentCount(lesson.studentCount || 3426)} students
-              </span>
-            </div>
-          </div>
-
-          {/* Video Player Embed (with start seconds seek support) */}
-          <div className="mt-6">
-            <VideoEmbed
-              url={lesson.videoUrl}
-              title={lesson.title}
-              startSeconds={startSeconds}
-            />
-          </div>
-
-          {/* Tabs: Lesson Content & Notes */}
-          <LessonTabs lesson={lesson} />
-
-          {/* Previous / Next Lesson Navigation Footer */}
-          <LessonFooter
+      <LessonProgressProvider
+        courseId={lesson.course._id}
+        currentLessonSlug={lessonSlug}
+        startSeconds={startSeconds}
+        totalLessons={totalLessons}
+      >
+        <div className="flex-1 flex flex-col lg:flex-row mx-auto w-full max-w-[90rem]">
+          {/* Left Module / Curriculum Sidebar */}
+          <LessonSidebar
             courseSlug={courseSlug}
-            navigation={lesson.navigation}
+            courseTitle={lesson.course.title}
+            modules={modules}
+            activeLessonSlug={lessonSlug}
+            activeModuleIndex={moduleIndex}
           />
-        </main>
-      </div>
+
+          {/* Main Lesson Content Area */}
+          <main className="flex-1 min-w-0 px-6 py-8 lg:px-10">
+            <Breadcrumbs
+              items={[
+                { label: 'All Courses', href: '/courses' },
+                { label: lesson.course.title, href: `/courses/${courseSlug}` },
+                { label: currentModuleTitle },
+                { label: lesson.title },
+              ]}
+            />
+
+            {/* Lesson Header */}
+            <div className="mt-6 flex flex-col gap-2">
+              <div className="flex items-center justify-between gap-4">
+                <Badge variant="popular" className="font-semibold tracking-wider text-xs uppercase">
+                  Lesson {moduleIndex + 1}.{lessonIndex + 1}
+                </Badge>
+                <div className="flex items-center gap-3">
+                  <MarkCompleteButton lessonId={lesson._id} />
+                  <Button variant="secondary" size="md" className="gap-1.5 text-xs text-neutral-600">
+                    <Bookmark className="h-3.5 w-3.5" />
+                    Bookmark
+                  </Button>
+                </div>
+              </div>
+
+              <h1 className="mt-2 font-display text-display-2 font-bold text-neutral-900 leading-tight">
+                {lesson.title}
+              </h1>
+
+              {/* Metadata row */}
+              <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2 text-small text-neutral-500">
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock className="h-4 w-4 text-neutral-400" />
+                  {formatDuration(lesson.duration)}
+                </span>
+                <span className="inline-flex items-center gap-1.5 capitalize">
+                  <BarChart3 className="h-4 w-4 text-neutral-400" />
+                  Intermediate
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Users className="h-4 w-4 text-neutral-400" />
+                  {formatStudentCount(lesson.studentCount || 3426)} students
+                </span>
+              </div>
+            </div>
+
+            {/* Video Player Embed (with start seconds seek support) */}
+            <div className="mt-6">
+              <VideoEmbed
+                url={lesson.videoUrl}
+                title={lesson.title}
+                startSeconds={startSeconds}
+              />
+            </div>
+
+            {/* Tabs: Lesson Content & Notes */}
+            <LessonTabs lesson={lesson} />
+
+            {/* Previous / Next Lesson Navigation Footer */}
+            <LessonFooter
+              courseSlug={courseSlug}
+              navigation={lesson.navigation}
+              lessonId={lesson._id}
+            />
+          </main>
+        </div>
+      </LessonProgressProvider>
     </div>
   )
 }

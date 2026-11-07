@@ -12,6 +12,7 @@ export type CourseCardProps = {
   modules: string;
   href?: string;
   className?: string;
+  progressPercent?: number;
 };
 
 export function CourseCard({
@@ -24,6 +25,7 @@ export function CourseCard({
   modules,
   href,
   className,
+  progressPercent,
 }: CourseCardProps) {
   return (
     <Card className={cn("flex flex-col", className)}>
@@ -45,6 +47,20 @@ export function CourseCard({
       </h3>
       <p className="mt-2 text-body text-neutral-500">{description}</p>
       <div className="mt-auto pt-6">
+        {typeof progressPercent === 'number' && progressPercent > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between text-xs text-neutral-500 mb-1.5">
+              <span>Your progress</span>
+              <span className="font-semibold text-primary-600">{progressPercent}%</span>
+            </div>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-100">
+              <div
+                className="h-full rounded-full bg-primary-500 transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
+        )}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-neutral-200 pt-4 text-small text-neutral-500">
           <MetaItem icon={<BarChart3 />} label={level} />
           <MetaItem icon={<Clock />} label={duration} />

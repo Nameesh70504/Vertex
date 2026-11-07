@@ -5,6 +5,44 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Learner Progress Tracking (2026-11-07)
+
+### Entry points
+
+- Lesson page: `app/courses/[slug]/lessons/[lessonSlug]/page.tsx`
+- Course detail page: `app/courses/[slug]/page.tsx`
+- Catalog page: `app/courses/page.tsx`
+- API endpoints: `app/api/progress/route.ts` and `app/api/progress/position/route.ts`
+
+### Call chains
+
+1. **Lesson Completion Toggle:**
+   - User clicks `MarkCompleteButton` on `LessonPage` or `LessonFooter`.
+   - `MarkCompleteButton` calls `toggleComplete(lessonId)` from `LessonProgressContext` (`components/progress/lesson-progress-context.tsx`).
+   - Optimistic update updates `completedLessonIds` and recalculates `progressPercent` immediately in `LessonSidebar` (`components/lesson/lesson-sidebar.tsx`) and the button.
+   - Client sends `POST /api/progress` with `{ courseId, lessonId, completed, totalLessons }`.
+   - `app/api/progress/route.ts` validates Clerk authentication with `await auth()`.
+   - `setLessonCompletion()` in `sanity/lib/progress.ts` runs on the server using `getSanityWriteClient()`, creating or patching `progress-${userId}-${courseId}` in Sanity with updated `completedLessons` and optional `completedAt` timestamp.
+   - Response returns updated progress record; on failure, optimistic update rolls back.
+
+2. **Resume Position Tracking:**
+   - When a signed-in user navigates to a lesson page (`app/courses/[slug]/lessons/[lessonSlug]/page.tsx`), `LessonProgressProvider` detects the current lesson slug and start timestamp.
+   - Client sends `POST /api/progress/position` with `{ courseId, lessonSlug, position }`.
+   - `app/api/progress/position/route.ts` validates session with `await auth()`.
+   - `saveResumePosition()` in `sanity/lib/progress.ts` records `lastLessonSlug` and `lastPosition` in the user's progress document.
+
+3. **Course Detail Progress & Resume Affordance:**
+   - `app/courses/[slug]/page.tsx` renders `CourseSyllabusWrapper` and `CourseResumeFooter` (`components/progress/course-resume-footer.tsx`).
+   - If signed in, `CourseResumeFooter` fetches `GET /api/progress?courseId=...`.
+   - It computes completion percentage `(completedLessons.length / totalLessons) * 100` and configures the "Continue Learning" button to point directly to `lastLessonSlug` at `?start=lastPosition`.
+   - `CourseSyllabusWrapper` feeds `completedLessonIds` to `CourseSyllabus` (`components/course/course-syllabus.tsx`), replacing `PlayCircle` with green `CheckCircle2` icons.
+
+4. **Catalog Grid Progress Indicators:**
+   - `app/courses/page.tsx` renders `CoursesGridWithProgress` (`components/progress/courses-grid-with-progress.tsx`).
+   - If signed in, fetches `GET /api/progress`, calculating progress percentages for all started courses and displaying progress bars on matching `CourseCard` components.
+
+---
+
 ## Course Route Structure Unification (2026-11-07)
 
 ### Entry point

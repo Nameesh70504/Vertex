@@ -5,6 +5,30 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Learner Progress Tracking
+
+### Questions
+
+1. How is the Sanity document ID formatted for storing a learner's progress, and why is this pattern beneficial?
+
+2. Where and how are Sanity write permissions handled to ensure browser security?
+
+3. How does the course detail page determine where the "Continue Learning" button should link for a returning learner?
+
+4. How do catalog and course detail pages maintain static rendering for public users while still displaying personalized progress for signed-in users?
+
+### Answer key
+
+1. The document ID follows `progress-${userId}-${courseId}` (see [`sanity/lib/progress.ts`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/sanity/lib/progress.ts)). This deterministic ID allows atomic upserts via `createIfNotExists` and scopes progress cleanly per course without write contention.
+
+2. Mutations are executed exclusively on the server inside API route handlers (`/api/progress`) using `getSanityWriteClient()`, which reads `SANITY_API_WRITE_TOKEN` (or server `SANITY_API_READ_TOKEN` fallback) on the server side. No tokens are sent to or exposed in the browser bundle.
+
+3. When a learner visits a lesson, `POST /api/progress/position` saves `lastLessonSlug` and `lastPosition`. `CourseResumeFooter` (`components/progress/course-resume-footer.tsx`) reads these fields from `/api/progress?courseId=...` and builds a link to `/courses/[slug]/lessons/[lastLessonSlug]?start=[lastPosition]`.
+
+4. The pages render static HTML shells for all anonymous visitors. Progress state is hydrated client-side via React client components (`CoursesGridWithProgress`, `CourseResumeFooter`, `CourseSyllabusWrapper`) that asynchronously query `/api/progress` only when Clerk reports the user is signed in.
+
+---
+
 ## Course Route Structure Unification
 
 ### Questions

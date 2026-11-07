@@ -1,14 +1,16 @@
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { MarkCompleteButton } from '@/components/progress/mark-complete-button'
 import type { LessonNavigation } from '@/sanity/types'
 
 interface LessonFooterProps {
   courseSlug: string
   navigation?: LessonNavigation
+  lessonId?: string
 }
 
-export function LessonFooter({ courseSlug, navigation }: LessonFooterProps) {
+export function LessonFooter({ courseSlug, navigation, lessonId }: LessonFooterProps) {
   const previous = navigation?.previousLesson
   const next = navigation?.nextLesson
 
@@ -31,6 +33,13 @@ export function LessonFooter({ courseSlug, navigation }: LessonFooterProps) {
             <div />
           )}
         </div>
+
+        {/* Center: Mark Complete button */}
+        {lessonId && (
+          <div className="flex items-center justify-center">
+            <MarkCompleteButton lessonId={lessonId} />
+          </div>
+        )}
 
         {/* Next Lesson */}
         <div className="text-right">

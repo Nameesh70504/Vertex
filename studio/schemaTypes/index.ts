@@ -8,6 +8,7 @@ import { lessonType } from './lessonType'
 import { moduleType } from './moduleType'
 import { resourceType } from './resourceType'
 import { videoType } from './videoType'
+import { progressType } from './progressType'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -20,5 +21,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     resourceType,
     blockContentType,
     videoType,
+    progressType,
   ],
 }

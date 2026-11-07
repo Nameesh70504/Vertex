@@ -3,10 +3,9 @@ import type { Metadata } from 'next'
 import { ArrowLeft, Sparkle } from 'lucide-react'
 
 import { Navbar } from '@/components/nav/navbar'
-import { CourseCard } from '@/components/cards/course-card'
+import { CoursesGridWithProgress } from '@/components/progress/courses-grid-with-progress'
 import { Badge } from '@/components/ui/badge'
 import { SearchInput } from '@/components/ui/search-input'
-import { formatDuration } from '@/lib/format'
 import { getCategories, getCourses } from '@/sanity/lib/data'
 
 export const metadata: Metadata = {
@@ -74,26 +73,7 @@ export default async function CoursesPage() {
           </div>
 
           {/* Course Grid */}
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {courses.map((course) => {
-              const moduleCount = course.modules?.length || 0
-              const durationFormatted = formatDuration(course.totalDuration)
-
-              return (
-                <CourseCard
-                  key={course._id}
-                  title={course.title}
-                  description={course.summary || ''}
-                  logoText={course.title.charAt(0)}
-                  level={course.level || 'All Levels'}
-                  duration={durationFormatted}
-                  modules={`${moduleCount} modules`}
-                  href={`/courses/${course.slug.current}`}
-                  className="h-full transition-shadow hover:shadow-md"
-                />
-              )
-            })}
-          </div>
+          <CoursesGridWithProgress courses={courses} />
 
           {/* Bottom Callout */}
           <div className="mx-auto mt-16 flex w-full max-w-[70.5rem] items-center gap-4 px-2">
