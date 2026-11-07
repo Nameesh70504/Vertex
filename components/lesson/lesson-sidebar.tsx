@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, ChevronDown, ChevronUp, Play } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, ChevronDown, ChevronUp, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { formatDuration, formatLessonDuration } from '@/lib/format'
+import { useLessonProgress } from '@/components/progress/lesson-progress-context'
 
 interface LessonSidebarProps {
   courseSlug: string
@@ -21,6 +22,8 @@ interface LessonSidebarProps {
   }[]
   activeLessonSlug: string
   activeModuleIndex: number
+  completedLessonIds?: string[]
+  progressPercent?: number
 }
 
 export function LessonSidebar({
@@ -29,8 +32,15 @@ export function LessonSidebar({
   modules,
   activeLessonSlug,
   activeModuleIndex,
+  completedLessonIds,
+  progressPercent,
 }: LessonSidebarProps) {
   const [expandedIndex, setExpandedIndex] = useState<number>(activeModuleIndex)
+  const progressContext = useLessonProgress()
+
+  const activeCompletedIds =
+    completedLessonIds ?? progressContext?.completedLessonIds ?? []
+  const activePercent = progressPercent ?? progressContext?.progressPercent ?? 0
 
   const toggleModule = (index: number) => {
     setExpandedIndex((prev) => (prev === index ? -1 : index))
@@ -59,10 +69,10 @@ export function LessonSidebar({
               <div className="h-1.5 flex-1 rounded-full bg-neutral-100 overflow-hidden">
                 <div
                   className="h-full rounded-full bg-primary-500 transition-all duration-300"
-                  style={{ width: '0%' }}
+                  style={{ width: `${activePercent}%` }}
                 />
               </div>
-              <span className="text-small text-neutral-400">0% complete</span>
+              <span className="text-small text-neutral-400">{activePercent}% complete</span>
             </div>
           </div>
         </div>
@@ -126,6 +136,7 @@ export function LessonSidebar({
                 <div className="bg-neutral-50/50 py-1 pl-12 pr-4 space-y-0.5">
                   {moduleItem.lessons.map((lesson) => {
                     const isNowPlaying = lesson.slug?.current === activeLessonSlug
+                    const isCompleted = activeCompletedIds.includes(lesson._id)
 
                     return (
                       <Link
@@ -139,7 +150,9 @@ export function LessonSidebar({
                         )}
                       >
                         <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                          {isNowPlaying ? (
+                          {isCompleted ? (
+                            <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                          ) : isNowPlaying ? (
                             <Play className="h-3.5 w-3.5 shrink-0 fill-primary-500 text-primary-500" />
                           ) : (
                             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-neutral-300 group-hover:bg-neutral-400" />

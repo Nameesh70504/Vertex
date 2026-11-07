@@ -7,6 +7,7 @@ import { learningOutcomeType } from './learningOutcomeType'
 import { lessonType } from './lessonType'
 import { moduleType } from './moduleType'
 import { resourceType } from './resourceType'
+import { progressType } from './progressType'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -18,5 +19,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     learningOutcomeType,
     resourceType,
     blockContentType,
+    progressType,
   ],
 }

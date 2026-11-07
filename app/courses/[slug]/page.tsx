@@ -16,7 +16,8 @@ import { Breadcrumbs } from '@/components/nav/breadcrumbs'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { WhatYoullLearn } from '@/components/course/what-youll-learn'
-import { CourseSyllabus } from '@/components/course/course-syllabus'
+import { CourseSyllabusWrapper } from '@/components/progress/course-syllabus-wrapper'
+import { CourseResumeFooter } from '@/components/progress/course-resume-footer'
 import { formatDuration, formatStudentCount } from '@/lib/format'
 import { getCourseBySlug, getCourseSlugs } from '@/sanity/lib/data'
 import { urlFor } from '@/sanity/lib/image'
@@ -170,9 +171,10 @@ export default async function CourseDetailPage({ params }: PageProps) {
           <WhatYoullLearn outcomes={course.learningOutcomes} />
 
           {/* Course Content / Syllabus Accordion */}
-          <CourseSyllabus
+          <CourseSyllabusWrapper
             modules={course.modules}
             courseSlug={course.slug.current}
+            courseId={course._id}
           />
 
           {/* Instructor Bio Section */}
@@ -219,29 +221,12 @@ export default async function CourseDetailPage({ params }: PageProps) {
       </main>
 
       {/* Floating / Sticky Resume Bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200/90 bg-white/95 px-6 py-3.5 backdrop-blur-md shadow-lg">
-        <div className="mx-auto flex max-w-[70.5rem] items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <span className="text-small font-medium text-neutral-700">
-              Your Progress
-            </span>
-            <div className="hidden h-2 w-48 overflow-hidden rounded-full bg-neutral-100 sm:block">
-              <div
-                className="h-full rounded-full bg-primary-500 transition-all duration-300"
-                style={{ width: '0%' }}
-              />
-            </div>
-            <span className="text-small text-neutral-500">0% complete</span>
-          </div>
-
-          <Link href={startLearningHref}>
-            <Button size="md" className="gap-2">
-              Continue Learning
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <CourseResumeFooter
+        courseId={course._id}
+        courseSlug={course.slug.current}
+        firstLessonHref={startLearningHref}
+        totalLessons={course.totalLessons || 0}
+      />
     </div>
   )
 }

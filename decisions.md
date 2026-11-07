@@ -5,6 +5,20 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Learner Progress Tracking (2026-11-07)
+
+1. **Per-(user, course) deterministic document ID (`progress-{userId}-{courseId}`).** Keying progress documents per course rather than having a single monolithic document per learner prevents document size bloat, avoids write conflicts across concurrent device usage, and makes course-scoped queries instant and atomic. Deterministic ID ensures idempotent upserts via `createIfNotExists`. Alternative rejected: storing all progress in a single `user` or `profile` document — creates high contention and large payloads.
+
+2. **Server-only write token isolation (§5, §12).** Progress mutations use `getSanityWriteClient()` with `SANITY_API_WRITE_TOKEN` strictly inside Next.js server route handlers (`/api/progress`). No write tokens or credentials ever touch the client bundle. Alternative rejected: client-side Sanity mutations using tokens in browser — severe security vulnerability that violates architectural boundaries.
+
+3. **Optimistic UI with React Transitions for instant feedback.** Lesson completion toggles update local state immediately via `useTransition`, instantly updating the Mark as Complete button, sidebar checkmarks, and overall course percentage before the server mutation finishes, rolling back gracefully if the network request fails. Alternative rejected: blocking UI until server confirmation — creates noticeable lag and degraded user experience.
+
+4. **Client-side progress hydration for public route cacheability.** Pages like `/courses` and `/courses/[slug]` remain static/public for anonymous users and SEO crawlers. Signed-in progress data hydrates client-side via `/api/progress`. Alternative rejected: forcing all course and catalog pages to be dynamic `force-dynamic` / request-bound for everyone — destroys CDN caching and static generation advantages for public visitors.
+
+5. **Explicit completion toggle over automated video percentage heuristics (§7).** A "Mark as Complete" button gives learners deliberate control over their course progress, avoiding false completions caused by third-party iframe embed restrictions (since custom video players are disallowed per §7). Alternative rejected: polling third-party video iframes or auto-marking at arbitrary playback percentages without user consent.
+
+---
+
 ## Course Route Structure Unification (2026-11-07)
 
 1. **Nested Dynamic Route Consolidation under `[slug]`.** In Next.js App Router, dynamic segment names at the same tree depth must be identical. Having sibling directories `app/courses/[slug]` and `app/courses/[courseSlug]` triggered `'courseSlug' !== 'slug'`. Moved `lessons/` into `app/courses/[slug]/lessons/[lessonSlug]/` so that both `/courses/:slug` and `/courses/:slug/lessons/:lessonSlug` share the single dynamic folder `[slug]`. Alternative rejected: renaming `[slug]` to `[courseSlug]` on the course page — `[slug]` is the consistent standard used across `courses/[slug]`, `instructors/[slug]`, etc.

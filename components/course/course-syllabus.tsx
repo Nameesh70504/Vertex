@@ -2,17 +2,20 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ChevronDown, ChevronUp, PlayCircle } from 'lucide-react'
+import { CheckCircle2, ChevronDown, ChevronUp, PlayCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { formatDuration, formatLessonDuration } from '@/lib/format'
+import { cn } from '@/lib/utils'
 import type { Module } from '@/sanity/types'
 
 export function CourseSyllabus({
   modules,
   courseSlug,
+  completedLessonIds,
 }: {
   modules?: Module[]
   courseSlug: string
+  completedLessonIds?: string[]
 }) {
   const [expandedModules, setExpandedModules] = useState<Record<number, boolean>>({
     0: true, // First module expanded by default
@@ -94,30 +97,43 @@ export function CourseSyllabus({
 
               {isExpanded && moduleItem.lessons && moduleItem.lessons.length > 0 && (
                 <div className="border-t border-neutral-100 bg-neutral-50/50 px-5 py-3 divide-y divide-neutral-100">
-                  {moduleItem.lessons.map((lesson, lesIdx) => (
-                    <div
-                      key={lesson._id || lesIdx}
-                      className="flex items-center justify-between py-3 text-body"
-                    >
-                      <div className="flex items-center gap-3 min-w-0 pr-4">
-                        <PlayCircle className="h-4 w-4 shrink-0 text-primary-500" />
-                        <Link
-                          href={`/courses/${courseSlug}/lessons/${lesson.slug?.current}`}
-                          className="truncate font-medium text-neutral-800 hover:text-primary-600 transition-colors"
-                        >
-                          {lesson.title}
-                        </Link>
-                        {lesson.freePreview && (
-                          <Badge variant="lesson" className="text-xs py-0.5 px-2 font-normal">
-                            Free Preview
-                          </Badge>
-                        )}
+                  {moduleItem.lessons.map((lesson, lesIdx) => {
+                    const isCompleted = completedLessonIds?.includes(lesson._id)
+
+                    return (
+                      <div
+                        key={lesson._id || lesIdx}
+                        className="flex items-center justify-between py-3 text-body"
+                      >
+                        <div className="flex items-center gap-3 min-w-0 pr-4">
+                          {isCompleted ? (
+                            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+                          ) : (
+                            <PlayCircle className="h-4 w-4 shrink-0 text-primary-500" />
+                          )}
+                          <Link
+                            href={`/courses/${courseSlug}/lessons/${lesson.slug?.current}`}
+                            className={cn(
+                              'truncate font-medium transition-colors',
+                              isCompleted
+                                ? 'text-neutral-700 hover:text-primary-600'
+                                : 'text-neutral-800 hover:text-primary-600'
+                            )}
+                          >
+                            {lesson.title}
+                          </Link>
+                          {lesson.freePreview && (
+                            <Badge variant="lesson" className="text-xs py-0.5 px-2 font-normal">
+                              Free Preview
+                            </Badge>
+                          )}
+                        </div>
+                        <span className="shrink-0 text-small text-neutral-500">
+                          {formatLessonDuration(lesson.duration)}
+                        </span>
                       </div>
-                      <span className="shrink-0 text-small text-neutral-500">
-                        {formatLessonDuration(lesson.duration)}
-                      </span>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               )}
             </div>

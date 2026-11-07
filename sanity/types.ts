@@ -200,4 +200,17 @@ export interface SearchResponse {
   results: SearchResultItem[]
 }
 
+export interface LearnerProgress {
+  _id: string
+  _type: 'progress'
+  clerkUserId: string
+  courseId: string
+  completedLessons?: string[]
+  lastLessonSlug?: string
+  lastPosition?: number
+  completedAt?: string
+  _updatedAt?: string
+}
+
+
 
