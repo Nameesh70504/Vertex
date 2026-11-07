@@ -5,6 +5,38 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Course Route Structure Unification (2026-11-07)
+
+### Entry point
+
+- Course detail route: `app/courses/[slug]/page.tsx`.
+- Lesson player route: `app/courses/[slug]/lessons/[lessonSlug]/page.tsx`.
+
+### Call chain
+
+1. Previously, `app/courses/[slug]` (course detail) and `app/courses/[courseSlug]/lessons` (lesson player) coexisted at the same path level, causing Next.js App Router conflict: `'courseSlug' !== 'slug'`.
+2. Consolidated lesson route under the same dynamic segment: `app/courses/[slug]/lessons/[lessonSlug]/page.tsx`.
+3. `LessonPage` reads `params.slug` (aliased as `courseSlug`) and `params.lessonSlug`, preserving existing public URLs (`/courses/[courseSlug]/lessons/[lessonSlug]`) and component props.
+4. Cleaned stale `.next` typegen cache and updated `app/layout.tsx` props type.
+
+---
+
+## Prerender Purity & Dynamic Request Handling (2026-11-07)
+
+### Entry point
+
+- Dynamic server page routes: `app/search/page.tsx` and `app/courses/[courseSlug]/lessons/[lessonSlug]/page.tsx`.
+- Client auth component: `components/nav/auth-controls.tsx`.
+
+### Call chain
+
+1. In Next.js 16 with `cacheComponents: true` and Partial Prefetching enabled, static prerender passes flag unstable values like `Date.now()` (triggered by Clerk authentication evaluations or dynamic request accesses).
+2. `components/nav/auth-controls.tsx` is designated as a client boundary (`'use client'`), isolating interactive Clerk modal buttons (`SignInButton`, `SignUpButton`, `UserButton`, `Show`) and rendering inside a `<Suspense>` boundary.
+3. `app/search/page.tsx` and lesson detail page invoke `await connection()` from `next/server` before reading `searchParams`, explicitly declaring request-time dynamic execution.
+4. Route handler `app/api/search/route.ts` removes legacy `export const dynamic` in compatibility with `cacheComponents`.
+
+---
+
 ## Grounded AI Search Experience (2026-11-07)
 
 ### Entry point

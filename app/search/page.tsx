@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { connection } from 'next/server'
 import { Navbar } from '@/components/nav/navbar'
 import { searchContent } from '@/sanity/lib/data'
 import { SearchResultsClient } from '@/components/search/search-results-client'
@@ -31,6 +32,7 @@ export async function generateMetadata({
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
+  await connection()
   const params = await searchParams
   const query = params.q?.trim() || ''
   const sort = params.sort || 'relevance'

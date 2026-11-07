@@ -1,3 +1,5 @@
+'use client';
+
 import { Bell } from "lucide-react";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { Suspense } from "react";

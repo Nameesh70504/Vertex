@@ -5,6 +5,42 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Course Route Structure Unification
+
+### Questions
+
+1. Why does Next.js throw `Error: You cannot use different slug names for the same dynamic path ('courseSlug' !== 'slug')` when dynamic segments at the same depth have different names?
+
+2. How was the lesson page route structure adjusted to resolve the dynamic segment conflict while preserving public URLs?
+
+### Answer key
+
+1. Next.js App Router requires dynamic segments at the same level of the URL tree to share the same parameter name because the router builds a single route pattern for matching incoming paths. Having conflicting parameter names (`[slug]` vs `[courseSlug]`) creates an ambiguous segment definition.
+
+2. `lessons/` was moved into `app/courses/[slug]/lessons/[lessonSlug]/page.tsx`, so both course details and lessons reside under `[slug]`. Inside `LessonPage`, `params.slug` is aliased to `courseSlug` to maintain clean component props without breaking any internal logic.
+
+---
+
+## Prerender Purity & Dynamic Request Handling
+
+### Questions
+
+1. Why does Next.js 16 with `cacheComponents: true` flag calls to `Date.now()` or `Math.random()` during prerendering?
+
+2. How does `await connection()` from `next/server` resolve the unstable value error for routes that depend on runtime request parameters like `searchParams`?
+
+3. Why is `export const dynamic = 'force-dynamic'` rejected by Next.js when `cacheComponents: true` is enabled in `next.config.ts`?
+
+### Answer key
+
+1. Components and data functions cached during prerendering must be deterministic and pure so their HTML shell can be reliably prerendered and reused; volatile values like `Date.now()` produce different outputs on every render. See [Next.js Caching Documentation](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/node_modules/next/dist/docs/01-app/01-getting-started/08-caching.md#L330-L335).
+
+2. It explicitly signals to the Next.js runtime that the component relies on the incoming request connection, deferring its evaluation to request time and preventing static prerendering of that segment. See [`app/search/page.tsx`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/app/search/page.tsx).
+
+3. `cacheComponents: true` replaces legacy route segment configs (`dynamic`, `revalidate`) with component-level caching directives (`"use cache"`, `cacheLife`) and `connection()`.
+
+---
+
 ## Grounded AI Search Experience
 
 ### Questions
