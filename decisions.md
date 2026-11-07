@@ -5,6 +5,12 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Course Route Structure Unification (2026-11-07)
+
+1. **Nested Dynamic Route Consolidation under `[slug]`.** In Next.js App Router, dynamic segment names at the same tree depth must be identical. Having sibling directories `app/courses/[slug]` and `app/courses/[courseSlug]` triggered `'courseSlug' !== 'slug'`. Moved `lessons/` into `app/courses/[slug]/lessons/[lessonSlug]/` so that both `/courses/:slug` and `/courses/:slug/lessons/:lessonSlug` share the single dynamic folder `[slug]`. Alternative rejected: renaming `[slug]` to `[courseSlug]` on the course page — `[slug]` is the consistent standard used across `courses/[slug]`, `instructors/[slug]`, etc.
+
+---
+
 ## Prerender Purity & Dynamic Request Handling (2026-11-07)
 
 1. **Explicit Request-Time Deferral via `await connection()`.** In Next.js 16 with `cacheComponents: true` and Partial Prerendering, accessing dynamic request parameters like `searchParams` during static prerender causes Next.js to flag volatile values like `Date.now()`. Calling `await connection()` from `next/server` explicitly defers rendering of `/search` and lesson timestamps to request time, preventing prerendering errors. Alternative rejected: disabling `cacheComponents` globally — loses modern streaming and caching performance gains.

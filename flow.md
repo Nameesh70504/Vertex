@@ -5,6 +5,22 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Course Route Structure Unification (2026-11-07)
+
+### Entry point
+
+- Course detail route: `app/courses/[slug]/page.tsx`.
+- Lesson player route: `app/courses/[slug]/lessons/[lessonSlug]/page.tsx`.
+
+### Call chain
+
+1. Previously, `app/courses/[slug]` (course detail) and `app/courses/[courseSlug]/lessons` (lesson player) coexisted at the same path level, causing Next.js App Router conflict: `'courseSlug' !== 'slug'`.
+2. Consolidated lesson route under the same dynamic segment: `app/courses/[slug]/lessons/[lessonSlug]/page.tsx`.
+3. `LessonPage` reads `params.slug` (aliased as `courseSlug`) and `params.lessonSlug`, preserving existing public URLs (`/courses/[courseSlug]/lessons/[lessonSlug]`) and component props.
+4. Cleaned stale `.next` typegen cache and updated `app/layout.tsx` props type.
+
+---
+
 ## Prerender Purity & Dynamic Request Handling (2026-11-07)
 
 ### Entry point

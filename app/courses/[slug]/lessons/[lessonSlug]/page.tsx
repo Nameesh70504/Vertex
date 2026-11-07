@@ -15,7 +15,7 @@ import { formatDuration, formatStudentCount } from '@/lib/format'
 import { getLessonBySlug } from '@/sanity/lib/data'
 
 interface LessonPageProps {
-  params: Promise<{ courseSlug: string; lessonSlug: string }>
+  params: Promise<{ slug: string; lessonSlug: string }>
   searchParams: Promise<{ start?: string }>
 }
 
@@ -43,7 +43,7 @@ export default async function LessonPage({
   searchParams,
 }: LessonPageProps) {
   await connection()
-  const { courseSlug, lessonSlug } = await params
+  const { slug: courseSlug, lessonSlug } = await params
   const { start } = await searchParams
   const startSeconds = start ? parseFloat(start) : undefined
 
