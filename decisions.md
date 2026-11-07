@@ -5,6 +5,14 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Prerender Purity & Dynamic Request Handling (2026-11-07)
+
+1. **Explicit Request-Time Deferral via `await connection()`.** In Next.js 16 with `cacheComponents: true` and Partial Prerendering, accessing dynamic request parameters like `searchParams` during static prerender causes Next.js to flag volatile values like `Date.now()`. Calling `await connection()` from `next/server` explicitly defers rendering of `/search` and lesson timestamps to request time, preventing prerendering errors. Alternative rejected: disabling `cacheComponents` globally — loses modern streaming and caching performance gains.
+
+2. **Client Boundary for `AuthControls`.** Marked `components/nav/auth-controls.tsx` with `'use client'`, ensuring Clerk auth checks run on the client within the existing `<Suspense>` wrapper rather than evaluating server-side during the static prerendering pass. Alternative rejected: removing auth controls from navbar — breaks user sign-in/avatar requirements.
+
+---
+
 ## Grounded AI Search Experience (2026-11-07)
 
 1. **Two-Stage Timestamp Resolution (§7).** For video moment matching, authored chapter markers (`chapters[]`) are checked first because table of contents labels are clean, precise topic boundaries. Only if no chapter matches does the engine fall back to matching transcript segments (`chunks[]`). Alternative rejected: matching both simultaneously without priority — transcript text is noisier and would frequently overshadow clean chapter boundaries.

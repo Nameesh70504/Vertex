@@ -5,6 +5,22 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Prerender Purity & Dynamic Request Handling (2026-11-07)
+
+### Entry point
+
+- Dynamic server page routes: `app/search/page.tsx` and `app/courses/[courseSlug]/lessons/[lessonSlug]/page.tsx`.
+- Client auth component: `components/nav/auth-controls.tsx`.
+
+### Call chain
+
+1. In Next.js 16 with `cacheComponents: true` and Partial Prefetching enabled, static prerender passes flag unstable values like `Date.now()` (triggered by Clerk authentication evaluations or dynamic request accesses).
+2. `components/nav/auth-controls.tsx` is designated as a client boundary (`'use client'`), isolating interactive Clerk modal buttons (`SignInButton`, `SignUpButton`, `UserButton`, `Show`) and rendering inside a `<Suspense>` boundary.
+3. `app/search/page.tsx` and lesson detail page invoke `await connection()` from `next/server` before reading `searchParams`, explicitly declaring request-time dynamic execution.
+4. Route handler `app/api/search/route.ts` removes legacy `export const dynamic` in compatibility with `cacheComponents`.
+
+---
+
 ## Grounded AI Search Experience (2026-11-07)
 
 ### Entry point

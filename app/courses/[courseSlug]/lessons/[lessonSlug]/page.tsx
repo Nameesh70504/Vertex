@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { connection } from 'next/server'
 import { BarChart3, Bookmark, Clock, Users } from 'lucide-react'
 
 import { Navbar } from '@/components/nav/navbar'
@@ -41,6 +42,7 @@ export default async function LessonPage({
   params,
   searchParams,
 }: LessonPageProps) {
+  await connection()
   const { courseSlug, lessonSlug } = await params
   const { start } = await searchParams
   const startSeconds = start ? parseFloat(start) : undefined
