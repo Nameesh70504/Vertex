@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { ArrowRight, Sparkle } from "lucide-react";
 import { CourseCard } from "@/components/cards/course-card";
 import { Navbar } from "@/components/nav/navbar";
@@ -9,6 +10,7 @@ import { formatDuration } from "@/lib/format";
 import { getCourses } from "@/sanity/lib/data";
 
 export default async function Home() {
+  await connection();
   const courses = await getCourses();
   const featuredCourses = courses.slice(0, 6);
 

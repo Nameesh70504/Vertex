@@ -5,6 +5,14 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## GROQ Query Namespace & Prerender Stabilization (2026-11-08)
+
+1. **Standard GROQ `math::sum()` for Duration Aggregations.** In GROQ, arithmetic sum operations on numeric arrays are provided by the `math::` namespace (`math::sum()`). Unqualified `sum()` is not a GROQ keyword and produces a 400 Bad Request query parse error. Alternative rejected: fetching all module lessons and summing duration in application memory — delegating aggregation to Sanity's Content Lake query engine keeps network payload sizes minimal and leverages Sanity cache.
+
+2. **Consistent Request-Time Deferral via `await connection()` across all pages.** With Clerk authentication mounted in the root layout and navbar, static prerendering in Next.js 16 (`cacheComponents: true`) encounters volatile timestamps from Clerk's session/cache subsystems. Explicitly calling `await connection()` across `app/page.tsx`, `app/courses/page.tsx`, and `app/courses/[slug]/page.tsx` ensures uniform request-time rendering behavior. Alternative rejected: turning off Clerk on the homepage — breaks navbar auth controls and learner buttons.
+
+---
+
 ## Learner Progress Tracking (2026-11-07)
 
 1. **Per-(user, course) deterministic document ID (`progress-{userId}-{courseId}`).** Keying progress documents per course rather than having a single monolithic document per learner prevents document size bloat, avoids write conflicts across concurrent device usage, and makes course-scoped queries instant and atomic. Deterministic ID ensures idempotent upserts via `createIfNotExists`. Alternative rejected: storing all progress in a single `user` or `profile` document — creates high contention and large payloads.

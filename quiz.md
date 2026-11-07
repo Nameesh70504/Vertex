@@ -5,6 +5,22 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## GROQ Query Namespace & Prerender Stabilization
+
+### Questions
+
+1. Which namespace does Sanity's GROQ language require for array summation functions such as total course duration?
+
+2. Why did `app/page.tsx` fail with `Next.js encountered the unstable value Date.now() while prerendering`, and how was it solved?
+
+### Answer key
+
+1. GROQ requires `math::sum()` (e.g. `math::sum(modules[].lessons[]->duration)` in [`sanity/lib/queries.ts`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/sanity/lib/queries.ts)). Unqualified `sum()` is undefined in GROQ.
+
+2. Clerk's authentication hooks/client session evaluate `Date.now()`, which Next.js 16 flags during static prerendering when `cacheComponents: true` is enabled. Adding `await connection()` from `next/server` defers rendering to request time.
+
+---
+
 ## Learner Progress Tracking
 
 ### Questions
