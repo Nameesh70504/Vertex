@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { connection } from 'next/server'
 import { ArrowLeft, Sparkle } from 'lucide-react'
 
 import { Navbar } from '@/components/nav/navbar'
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 }
 
 export default async function CoursesPage() {
+  await connection()
   const [courses, categories] = await Promise.all([
     getCourses(),
     getCategories(),

@@ -5,6 +5,28 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## GROQ Query Namespace & Prerender Stabilization (2026-11-08)
+
+### Entry points
+
+- Home page: `app/page.tsx`
+- Catalog page: `app/courses/page.tsx`
+- Course detail page: `app/courses/[slug]/page.tsx`
+- Sanity query definitions: `sanity/lib/queries.ts`
+
+### Call chain
+
+1. **GROQ Aggregation Fix:**
+   - Previous GROQ queries used unqualified `sum(modules[].lessons[]->duration)`, causing Sanity Content Lake parse error: `Undefined function "sum"`.
+   - Updated queries in `COURSES_QUERY`, `COURSE_BY_SLUG_QUERY`, and `INSTRUCTOR_BY_SLUG_QUERY` to use the standard GROQ math namespace function `math::sum(modules[].lessons[]->duration)`.
+   - Verified live execution against Sanity dataset returning integer duration sums.
+
+2. **Route Prerender Stabilization:**
+   - Next.js 16.4.2 with `cacheComponents: true` flagged Clerk's dynamic `Date.now()` evaluation during static prerendering passes of `/`, `/courses`, and `/courses/[slug]`.
+   - Added `await connection()` from `next/server` at the start of each page component, deferring execution to request time and eliminating `unstable value Date.now() while prerendering` errors.
+
+---
+
 ## Learner Progress Tracking (2026-11-07)
 
 ### Entry points

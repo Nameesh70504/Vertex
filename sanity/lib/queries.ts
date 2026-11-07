@@ -28,7 +28,7 @@ export const COURSES_QUERY = defineQuery(`
       slug
     },
     "totalLessons": count(modules[].lessons[]),
-    "totalDuration": sum(modules[].lessons[]->duration)
+    "totalDuration": math::sum(modules[].lessons[]->duration)
   }
 `)
 
@@ -77,7 +77,7 @@ export const COURSE_BY_SLUG_QUERY = defineQuery(`
       }
     },
     "totalLessons": count(modules[].lessons[]),
-    "totalDuration": sum(modules[].lessons[]->duration)
+    "totalDuration": math::sum(modules[].lessons[]->duration)
   }
 `)
 
@@ -182,7 +182,7 @@ export const INSTRUCTOR_BY_SLUG_QUERY = defineQuery(`
         slug
       },
       "totalLessons": count(modules[].lessons[]),
-      "totalDuration": sum(modules[].lessons[]->duration)
+      "totalDuration": math::sum(modules[].lessons[]->duration)
     }
   }
 `)
