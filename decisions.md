@@ -5,6 +5,12 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Remote Image Hostname Configuration (2026-11-09)
+
+1. **Explicit Next.js Image `remotePatterns` for `cdn.sanity.io` and Media CDNs.** Next.js blocks loading external URLs in `next/image` unless permitted in `images.remotePatterns`. Added `cdn.sanity.io`, `img.youtube.com`, and `images.unsplash.com` with `https` protocol to allow responsive image resizing, WebP/AVIF conversions, and automatic image optimization. Alternative rejected: using unoptimized standard `<img />` tags — loses image caching, lazy loading, layout shift prevention, and modern format conversions.
+
+---
+
 ## Static Prerender Optimization & Portable Text Bio Formatting (2026-11-09)
 
 1. **Defensive Span Text Extraction for Author/Instructor Portable Text Blocks.** In Sanity's seed data, `instructor.bio` can be authored either as raw text or structured Portable Text blocks (`_type: 'block'`), and `instructor.expertise` as a string or array of skills. Normalizing both dynamically in `CourseDetailPage` ensures error-free rendering across diverse document imports. Alternative rejected: requiring schema migration and DB updates — existing content lake documents already have Portable Text blocks, so frontend normalization is resilient.

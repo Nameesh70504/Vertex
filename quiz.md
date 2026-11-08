@@ -5,6 +5,22 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Remote Image Hostname Configuration
+
+### Questions
+
+1. Why does Next.js throw `Uncaught Error: Invalid src prop ... on next/image, hostname "cdn.sanity.io" is not configured`?
+
+2. Where in the project configuration is this resolved?
+
+### Answer key
+
+1. For security against arbitrary remote image optimization and DOS vulnerabilities, `next/image` requires remote domains to be whitelisted under `images.remotePatterns`.
+
+2. In [`next.config.ts`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/next.config.ts) under `images.remotePatterns` with `protocol: "https"` and `hostname: "cdn.sanity.io"`.
+
+---
+
 ## Static Prerender Optimization & Portable Text Bio Formatting
 
 ### Questions
