@@ -5,6 +5,22 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Static Prerender Optimization & Portable Text Bio Formatting
+
+### Questions
+
+1. Why did Next.js throw `Error: Objects are not valid as a React child (found: object with keys {_key, _type, children, markDefs, style})` when prerendering course pages?
+
+2. What route segment configuration does Next.js 16 provide to allow routes that read uncached dynamic data outside of `<Suspense>` to execute without failing instant validation?
+
+### Answer key
+
+1. Sanity `instructor.bio` contains Portable Text block objects (`_type: 'block'`) instead of plain strings. Directly embedding an object array in JSX causes React to throw an invalid child error; the blocks must have their `children[].text` extracted or rendered through a Portable Text serializer. See [`app/courses/[slug]/page.tsx`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/app/courses/[slug]/page.tsx).
+
+2. `export const instant = false` signals to the Next.js runtime and compiler that the route is an intentional blocking request-time route rather than an instant prefetch route. See [`app/courses/[slug]/lessons/[lessonSlug]/page.tsx`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/app/courses/[slug]/lessons/[lessonSlug]/page.tsx).
+
+---
+
 ## GROQ Query Namespace & Prerender Stabilization
 
 ### Questions

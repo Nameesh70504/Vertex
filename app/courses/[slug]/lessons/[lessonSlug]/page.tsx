@@ -21,6 +21,8 @@ interface LessonPageProps {
   searchParams: Promise<{ start?: string }>
 }
 
+export const instant = false
+
 export async function generateMetadata({
   params,
 }: LessonPageProps): Promise<Metadata> {
