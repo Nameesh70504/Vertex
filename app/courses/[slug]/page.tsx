@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import { connection } from 'next/server'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
@@ -49,7 +48,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CourseDetailPage({ params }: PageProps) {
-  await connection()
   const { slug } = await params
   const course = await getCourseBySlug(slug)
 
@@ -68,6 +66,23 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
   const instructorImageUrl = course.instructor?.photo
     ? urlFor(course.instructor.photo).width(160).height(160).url()
+    : null
+
+  const expertiseText = course.instructor?.expertise
+    ? Array.isArray(course.instructor.expertise)
+      ? course.instructor.expertise.join(' • ')
+      : course.instructor.expertise
+    : null
+
+  const bioText = course.instructor?.bio
+    ? Array.isArray(course.instructor.bio)
+      ? (course.instructor.bio as Array<{ children?: Array<{ text?: string }> }>)
+          .map((b) => b.children?.map((c) => c.text || '').join('') || '')
+          .filter(Boolean)
+          .join('\n\n')
+      : typeof course.instructor.bio === 'string'
+      ? course.instructor.bio
+      : null
     : null
 
   return (
@@ -205,14 +220,14 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   <h3 className="font-display text-heading-3 text-neutral-900">
                     {course.instructor.name}
                   </h3>
-                  {course.instructor.expertise && (
+                  {expertiseText && (
                     <p className="text-small font-medium text-primary-600 mt-0.5">
-                      {course.instructor.expertise}
+                      {expertiseText}
                     </p>
                   )}
-                  {course.instructor.bio && (
-                    <p className="mt-3 text-body text-neutral-600 leading-relaxed max-w-2xl">
-                      {course.instructor.bio}
+                  {bioText && (
+                    <p className="mt-3 text-body text-neutral-600 leading-relaxed max-w-2xl whitespace-pre-line">
+                      {bioText}
                     </p>
                   )}
                 </div>

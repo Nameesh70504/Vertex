@@ -34,8 +34,8 @@ export interface Instructor {
   name: string
   slug: Slug
   photo?: SanityImageReference
-  expertise?: string
-  bio?: string
+  expertise?: string | string[]
+  bio?: string | PortableTextBlock[]
 }
 
 export interface Resource {

@@ -5,6 +5,31 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Static Prerender Optimization & Portable Text Bio Formatting (2026-11-09)
+
+### Entry points
+
+- Course detail page: `app/courses/[slug]/page.tsx`
+- Search page: `app/search/page.tsx`
+- Lesson page: `app/courses/[slug]/lessons/[lessonSlug]/page.tsx`
+- Catalog page: `app/courses/page.tsx`
+- Home page: `app/page.tsx`
+
+### Call chain
+
+1. **Instructor Bio & Expertise Child Extraction:**
+   - On `app/courses/[slug]/page.tsx`, Sanity documents store `instructor.bio` as an array of Portable Text blocks (`_type: 'block'`) and `instructor.expertise` as a string array (`string[]`).
+   - Rendering `{course.instructor.bio}` directly in JSX caused React runtime exception: `Objects are not valid as a React child (found: object with keys {_key, _type, children, markDefs, style})`.
+   - Extracted `bioText` by iterating through block spans (`block.children[].text`) and joined paragraphs with newline breaks (`\n\n`), rendering with `whitespace-pre-line`.
+   - Extracted `expertiseText` by formatting string arrays with bullet separators (`join(' • ')`).
+
+2. **Next.js 16 Instant Navigation & Static Shell Generation:**
+   - Removed unnecessary `await connection()` from static pages (`app/page.tsx`, `app/courses/page.tsx`, and `app/courses/[slug]/page.tsx`), allowing Next.js 16 Turbopack compiler to generate static cached shells for all 24 routes at build time.
+   - For runtime request routes (`app/search/page.tsx` and `app/courses/[slug]/lessons/[lessonSlug]/page.tsx`), added `export const instant = false` to declare blocking server rendering for dynamic search parameters.
+   - Verified complete production build (`next build`) producing 24/24 static and partial prerendered routes.
+
+---
+
 ## GROQ Query Namespace & Prerender Stabilization (2026-11-08)
 
 ### Entry points

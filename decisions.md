@@ -5,6 +5,16 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Static Prerender Optimization & Portable Text Bio Formatting (2026-11-09)
+
+1. **Defensive Span Text Extraction for Author/Instructor Portable Text Blocks.** In Sanity's seed data, `instructor.bio` can be authored either as raw text or structured Portable Text blocks (`_type: 'block'`), and `instructor.expertise` as a string or array of skills. Normalizing both dynamically in `CourseDetailPage` ensures error-free rendering across diverse document imports. Alternative rejected: requiring schema migration and DB updates — existing content lake documents already have Portable Text blocks, so frontend normalization is resilient.
+
+2. **`export const instant = false` for Intentional Request-Time Routes.** Under Next.js 16 with `cacheComponents: true` and `partialPrefetching: true`, routes that read dynamic `searchParams` without top-level `<Suspense>` are flagged during prerendering. Rather than forcing artificial Suspense wrappers around entire pages, setting `export const instant = false` explicitly communicates to Next.js that the route is request-blocking. Alternative rejected: removing search parameters — breaks deep-linking to timestamps and search filters.
+
+3. **Restoring Pure Static Pre-generation for Catalog & Course Detail Pages.** Static pages like `/`, `/courses`, and `/courses/[slug]` should be prerendered at build time for optimal performance, instant navigation, and SEO. Removing `connection()` restored full static generation across all 10 course paths (24/24 static pages generated in 4.5s). Alternative rejected: leaving all pages as request-dynamic — loses static caching benefits and degrades TTFB.
+
+---
+
 ## GROQ Query Namespace & Prerender Stabilization (2026-11-08)
 
 1. **Standard GROQ `math::sum()` for Duration Aggregations.** In GROQ, arithmetic sum operations on numeric arrays are provided by the `math::` namespace (`math::sum()`). Unqualified `sum()` is not a GROQ keyword and produces a 400 Bad Request query parse error. Alternative rejected: fetching all module lessons and summing duration in application memory — delegating aggregation to Sanity's Content Lake query engine keeps network payload sizes minimal and leverages Sanity cache.

@@ -11,6 +11,8 @@ interface SearchPageProps {
   }>
 }
 
+export const instant = false
+
 export async function generateMetadata({
   searchParams,
 }: SearchPageProps): Promise<Metadata> {
