@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import {
   ArrowRight,
@@ -47,7 +48,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function CourseDetailPage({ params }: PageProps) {
+export default function CourseDetailPage({ params }: PageProps) {
+  return (
+    <Suspense fallback={null}>
+      <CourseDetailContent params={params} />
+    </Suspense>
+  )
+}
+
+async function CourseDetailContent({ params }: PageProps) {
   const { slug } = await params
   const course = await getCourseBySlug(slug)
 

@@ -5,6 +5,21 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Suspense Boundary for Course Detail Dynamic Params (2026-11-09)
+
+### Entry points
+
+- Course detail page: `app/courses/[slug]/page.tsx`
+
+### Call chain
+
+1. **Params Resolution inside `<Suspense>`:**
+   - Under Next.js 16 with `cacheComponents: true` and `partialPrefetching: true`, accessing `await params` at the top level of a dynamic route flags diagnostic `blocking-prerender-runtime` ("Next.js encountered URL data outside of Suspense").
+   - Followed Next.js 16 official migration pattern: `CourseDetailPage` serves as a synchronous shell returning `<Suspense fallback={null}><CourseDetailContent params={params} /></Suspense>`.
+   - `CourseDetailContent` awaits `params` inside the boundary, enabling Next.js Turbopack compiler to generate instant static shells while streaming dynamic parameters.
+
+---
+
 ## Remote Image Hostname Configuration (2026-11-09)
 
 ### Entry points
