@@ -5,6 +5,38 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Suspense Boundary for Course Detail Dynamic Params
+
+### Questions
+
+1. Why does Next.js 16 report `Next.js encountered URL data outside of Suspense. This may prevent the navigation from being instant...` when `await params` is placed at the top of a page?
+
+2. How was `app/courses/[slug]/page.tsx` refactored to comply with Next.js 16 Partial Prefetching?
+
+### Answer key
+
+1. When `params` is awaited directly in the root page component, Next.js cannot prerender an App Shell for instant navigation because the URL parameter must be resolved before any HTML can be produced.
+
+2. The default export `CourseDetailPage` returns a `<Suspense fallback={null}><CourseDetailContent params={params} /></Suspense>` tree, delegating the `await params` resolution to the nested async `CourseDetailContent` component.
+
+---
+
+## Remote Image Hostname Configuration
+
+### Questions
+
+1. Why does Next.js throw `Uncaught Error: Invalid src prop ... on next/image, hostname "cdn.sanity.io" is not configured`?
+
+2. Where in the project configuration is this resolved?
+
+### Answer key
+
+1. For security against arbitrary remote image optimization and DOS vulnerabilities, `next/image` requires remote domains to be whitelisted under `images.remotePatterns`.
+
+2. In [`next.config.ts`](file:///c:/Users/Anil%20Kumar/Desktop/MERN/vertex/next.config.ts) under `images.remotePatterns` with `protocol: "https"` and `hostname: "cdn.sanity.io"`.
+
+---
+
 ## Static Prerender Optimization & Portable Text Bio Formatting
 
 ### Questions
