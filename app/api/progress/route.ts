@@ -1,6 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse, after } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { getProgressForCourse, getProgressForUser, setLessonCompletion } from '@/sanity/lib/progress'
+import { getPostHogClient } from '@/lib/posthog-server'
+import { posthogLogger, posthogLoggerProvider, SeverityNumber } from '@/instrumentation'
+
+function flushPostHogLogs() {
+  after(() => posthogLoggerProvider?.forceFlush().catch(() => {}))
+}
 
 export async function GET(request: NextRequest) {
   const { isAuthenticated, userId } = await auth()
@@ -63,8 +69,41 @@ export async function POST(request: NextRequest) {
       typeof totalLessons === 'number' ? totalLessons : undefined
     )
 
+    posthogLogger?.emit({
+      body: 'Lesson completion updated',
+      severityNumber: SeverityNumber.INFO,
+      attributes: {
+        route: '/api/progress',
+        course_id: courseId,
+        lesson_id: lessonId,
+        completed: isCompleted,
+      },
+    })
+    flushPostHogLogs()
+
+    const posthog = getPostHogClient()
+    if (posthog) {
+      posthog.capture({
+        distinctId: userId,
+        event: 'lesson_completion_updated',
+        properties: {
+          course_id: courseId,
+          lesson_id: lessonId,
+          completed: isCompleted,
+          ...(typeof totalLessons === 'number' ? { total_lessons: totalLessons } : {}),
+        },
+      })
+      await posthog.flush().catch(() => {})
+    }
+
     return NextResponse.json(progress)
   } catch (error) {
+    posthogLogger?.emit({
+      body: 'Lesson completion update failed',
+      severityNumber: SeverityNumber.ERROR,
+      attributes: { route: '/api/progress' },
+    })
+    flushPostHogLogs()
     console.error('[API_PROGRESS_POST_ERROR]', error)
     return NextResponse.json(
       { error: 'Failed to update progress' },

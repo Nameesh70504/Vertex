@@ -19,6 +19,8 @@
 
 # production
 /build
+dist/
+studio/dist/
 
 # misc
 .DS_Store
@@ -44,3 +46,4 @@ AGENTS.md
 SKILLS.md
 DECISIONS.md
 FLOW.md
+.env.local

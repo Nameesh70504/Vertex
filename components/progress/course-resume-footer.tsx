@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { useAuth } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
+import posthog from 'posthog-js'
 
 interface CourseResumeFooterProps {
   courseId: string
@@ -78,7 +79,15 @@ export function CourseResumeFooter({
           <span className="text-small text-neutral-500">{percent}% complete</span>
         </div>
 
-        <Link href={resumeHref}>
+        <Link
+          href={resumeHref}
+          onClick={() => {
+            posthog.capture('course_learning_started', {
+              course_slug: courseSlug,
+              has_prior_progress: percent > 0,
+            })
+          }}
+        >
           <Button size="md" className="gap-2">
             {buttonLabel}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />

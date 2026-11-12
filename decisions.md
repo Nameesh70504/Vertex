@@ -5,6 +5,16 @@ and the alternative rejected. Keep it factual and short.
 
 ---
 
+## Lesson Page & Embedded Video Player UI Alignment (2026-11-12)
+
+1. **Provider Embed over Custom Video Player.** In strict accordance with AGENTS.md §7, video playback stays on the site through a provider embed (YouTube/Vimeo/Bunny) loaded via an `<iframe>` container with `start` timestamp parameter seeking, rather than implementing a custom HTML5 video player. Alternative rejected: building a custom video element with HTML5 controls — violates AGENTS.md §7 which requires provider embeds.
+
+2. **Vertical Timeline Stem for Module Lesson Progression.** In `components/lesson/lesson-sidebar.tsx`, active module lessons are laid out along a vertical connector stem line with solid terracotta dots and a circular terracotta play badge for the now-playing lesson, and hollow nodes for upcoming lessons, directly matching the desktop design reference `media_1794477029072_54daffe8.png`. Alternative rejected: flat indent list without connector lines — fails to reproduce the exact visual hierarchy and progression cues of the UI design.
+
+3. **Presentational Notes Tab and Seeded Content Fallbacks.** In `components/lesson/lesson-tabs.tsx`, the "Notes" tab is kept presentational with browser session storage per AGENTS.md §7. Overview, key points, pro tip, and resources sections render live Sanity Portable Text and array fields with graceful fallback defaults, ensuring resilient rendering across diverse seed data documents. Alternative rejected: making notes require a new database schema and API route — AGENTS.md §7 marks notes as presentational-only.
+
+---
+
 ## Suspense Boundary for Course Detail Dynamic Params (2026-11-09)
 
 1. **Awaiting `params` Inside `<Suspense>` on Dynamic Routes.** Next.js 16 Partial Prefetching expects dynamic route parameters to be resolved inside a `<Suspense>` boundary rather than blocking the root page component. Splitting `app/courses/[slug]/page.tsx` into a lightweight outer shell with `<Suspense fallback={null}>` and an inner async `CourseDetailContent` component fulfills instant navigation requirements and eliminates the `blocking-prerender-runtime` diagnostic. Alternative rejected: adding `export const instant = false` to course details — that would turn course pages into blocking request-time routes instead of allowing Partial Prefetching and static shell generation.

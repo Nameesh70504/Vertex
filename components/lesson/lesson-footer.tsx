@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { formatDuration } from '@/lib/format'
 import { MarkCompleteButton } from '@/components/progress/mark-complete-button'
 import type { LessonNavigation } from '@/sanity/types'
 
@@ -15,50 +15,67 @@ export function LessonFooter({ courseSlug, navigation, lessonId }: LessonFooterP
   const next = navigation?.nextLesson
 
   return (
-    <footer className="mt-14 border-t border-neutral-200/90 bg-white py-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        {/* Previous Lesson */}
-        <div>
+    <footer className="mt-12 pt-6 pb-12 border-t border-neutral-200/80 bg-white">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Previous Lesson Cluster */}
+        <div className="w-full sm:w-auto">
           {previous ? (
-            <Link href={`/courses/${courseSlug}/lessons/${previous.slug.current}`}>
-              <Button variant="secondary" className="gap-2 text-body">
-                <ArrowLeft className="h-4 w-4" />
+            <Link
+              href={`/courses/${courseSlug}/lessons/${previous.slug.current}`}
+              className="flex items-center gap-3.5 group"
+            >
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200/90 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-neutral-700 group-hover:bg-neutral-50 group-hover:border-neutral-300 transition-colors shadow-xs">
+                <ArrowLeft className="h-3.5 w-3.5" />
                 Previous Lesson
-              </Button>
-              <p className="mt-1.5 text-xs text-neutral-500 max-w-[14rem] truncate">
-                {previous.title}
-              </p>
+              </span>
+              <div className="text-left min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-neutral-900 truncate max-w-[11rem] sm:max-w-[13rem]">
+                  {previous.title}
+                </p>
+                <p className="text-[11px] text-neutral-400 mt-0.5">
+                  {formatDuration(previous.duration || 6120)}
+                </p>
+              </div>
             </Link>
           ) : (
             <div />
           )}
         </div>
 
-        {/* Center: Mark Complete button */}
+        {/* Center: Mark Complete affordance (accessible when signed in) */}
         {lessonId && (
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center my-2 sm:my-0">
             <MarkCompleteButton lessonId={lessonId} />
           </div>
         )}
 
-        {/* Next Lesson */}
-        <div className="text-right">
+        {/* Next Lesson Cluster */}
+        <div className="w-full sm:w-auto flex justify-end">
           {next ? (
-            <Link href={`/courses/${courseSlug}/lessons/${next.slug.current}`}>
-              <p className="mb-1.5 text-xs text-neutral-500 max-w-[14rem] truncate ml-auto">
-                {next.title}
-              </p>
-              <Button className="gap-2 text-body">
+            <Link
+              href={`/courses/${courseSlug}/lessons/${next.slug.current}`}
+              className="flex items-center gap-3.5 group ml-auto"
+            >
+              <div className="text-right min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-neutral-900 truncate max-w-[11rem] sm:max-w-[13rem]">
+                  {next.title}
+                </p>
+                <p className="text-[11px] text-neutral-400 mt-0.5">
+                  {formatDuration(next.duration || 4680)}
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#C85A32] hover:bg-[#B34E28] px-4 py-2 text-xs sm:text-sm font-medium text-white shadow-xs transition-colors">
                 Next Lesson
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </span>
             </Link>
           ) : (
-            <Link href={`/courses/${courseSlug}`}>
-              <Button className="gap-2 text-body">
-                Complete Course
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+            <Link
+              href={`/courses/${courseSlug}`}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#C85A32] hover:bg-[#B34E28] px-4 py-2 text-xs sm:text-sm font-medium text-white shadow-xs transition-colors ml-auto"
+            >
+              Complete Course
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           )}
         </div>
@@ -66,4 +83,3 @@ export function LessonFooter({ courseSlug, navigation, lessonId }: LessonFooterP
     </footer>
   )
 }
-

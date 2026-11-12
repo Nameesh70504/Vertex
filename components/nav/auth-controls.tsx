@@ -1,9 +1,45 @@
 'use client';
 
 import { Bell } from "lucide-react";
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
-import { Suspense } from "react";
+import { Show, SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
+import { Suspense, useEffect, useRef } from "react";
+import posthog from "posthog-js";
 import { Button } from "@/components/ui/button";
+
+export function PostHogIdentity() {
+  const { isLoaded, user } = useUser();
+  const previousUserId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    if (!user) {
+      if (previousUserId.current) {
+        posthog.reset();
+        previousUserId.current = null;
+      }
+      return;
+    }
+
+    if (previousUserId.current && previousUserId.current !== user.id) {
+      posthog.reset();
+    }
+
+    if (previousUserId.current !== user.id) {
+      posthog.identify(user.id, {
+        ...(user.primaryEmailAddress?.emailAddress
+          ? { email: user.primaryEmailAddress.emailAddress }
+          : {}),
+        ...(user.fullName ? { name: user.fullName } : {}),
+      });
+      previousUserId.current = user.id;
+    }
+  }, [isLoaded, user]);
+
+  return null;
+}
 
 export function AuthControls() {
   return (

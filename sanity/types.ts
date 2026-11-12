@@ -1,4 +1,4 @@
-import type { PortableTextBlock } from 'sanity'
+import type { PortableTextBlock } from '@portabletext/types'
 
 export interface SanityImageReference {
   _type: 'image'
@@ -101,11 +101,13 @@ export interface LessonNavigation {
     title: string
     slug: Slug
     moduleTitle: string
+    duration?: number
   } | null
   nextLesson?: {
     title: string
     slug: Slug
     moduleTitle: string
+    duration?: number
   } | null
 }
 
@@ -114,9 +116,11 @@ export interface LessonWithCourse extends Lesson {
     _id: string
     title: string
     slug: Slug
+    level?: 'beginner' | 'intermediate' | 'advanced' | 'all-levels'
     instructor?: Instructor
     modules?: {
       title: string
+      summary?: string
       lessons: {
         _id: string
         title: string

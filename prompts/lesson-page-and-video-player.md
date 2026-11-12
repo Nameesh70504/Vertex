@@ -1,90 +1,70 @@
-# Implementation prompt: Lesson Page and Embedded Video Player
+# Implementation Prompt: Lesson Page & Embedded Video Player (Pixel-Perfect to UI Reference)
 
 ## Goal
+Implement the lesson page (`/courses/[slug]/lessons/[lessonSlug]`) pixel-perfect to the attached reference design (`media_1794477029072_54daffe8.png`), wired to seeded Sanity content with provider video playback (YouTube, Vimeo, Bunny) directly on the page, interactive module curriculum sidebar with timeline progression, lesson notes/tabs, pro tip callout, resource cards, and previous/next lesson navigation.
 
-Build the Lesson page (`/courses/[courseSlug]/lessons/[lessonSlug]`) reproducing `design/vertex-lesson.png` down to spacing, typography, colors, and layout: an embedded on-site video player (YouTube/Vimeo/Bunny with start seconds query parameter support), expandable course module sidebar navigation with active lesson indicators, Portable Text notes rendering, key points checklist, pro tip card, downloadable/external resources grid, and previous/next lesson navigation.
+---
 
-## Skills and docs read
+## Skills & Guidelines Read
+- `AGENTS.md` (§1 Platform purpose, §2 Loop & prompt approval, §3 UI work: desktop reference is source of truth, reproduce exactly, responsive down to mobile, §5 Workspace boundaries & read-only pages, §7 Decisions: on-site embed player with start second param, presentational notes tab, §8 Data model: lesson, module, course, §13 Checks: type check, lint, dev).
+- Reference design: `media_1794477029072_54daffe8.png`.
 
-- `AGENTS.md` (§1 platform description, §3 UI work & reference image truth, §5 architecture boundaries, §7 decisions: on-site embed player with start second param, presentational notes tab, §8 lesson data shape, §13 checks, §15 living docs).
-- `portable-text-serialization` (`.agents/skills/portable-text-serialization/SKILL.md`).
-- Reference image: `design/vertex-lesson.png` (desktop source of truth for layout, sidebar, video embed, tabs, key points, pro tips, resources, and navigation).
+---
 
-## Code inspected
+## Code & Data Inspected
+| File | Current State | Target Alignment |
+|---|---|---|
+| `app/courses/[slug]/lessons/[lessonSlug]/page.tsx` | Renders basic lesson header, metadata, video embed, tabs, and footer. | Update layout, breadcrumbs, badge (`LESSON X.Y`), serif display title, subtitle, bookmark square button, metadata row, video embed, and footer navigation to match UI reference. |
+| `components/lesson/lesson-sidebar.tsx` | Flat module list without timeline styling, plain text buttons, progress bar. | Rebuild with exact reference styling: terracotta "← Back to course", course emblem, percentage text, module accordion with checkmarks `(✓)` for completed modules, terracotta filled badge for active module, and vertical timeline stem with active play badge `[▶]` and hollow dots. |
+| `components/lesson/video-embed.tsx` | Embed helper for YouTube, Vimeo, Bunny with start seconds. | Maintain iframe provider playback with exact 16:9 aspect ratio, rounded container, and dark presentation frame matching the design. |
+| `components/lesson/lesson-tabs.tsx` | Basic tabs for content and notes. | Match exact tab styling (terracotta underline on `Lesson Content`), serif `Overview` heading, Portable Text notes rendering, `In this lesson you will:` with terracotta check circle icons, peach `Pro Tip` callout box with lightbulb icon, and 3-card `Resources` grid with document/repo icons and external link indicators. |
+| `components/lesson/lesson-footer.tsx` | Simple navigation links. | Update to match design: left `← Previous Lesson` outline button with module title and duration underneath; right next lesson title/duration with solid terracotta `Next Lesson →` button. |
 
-- `sanity/lib/data.ts` — `getLessonBySlug(slug)` returns lesson with reverse-referenced parent course (`lesson.course`), dynamic `moduleIndex`, `lessonIndex`, and `navigation` (`previousLesson`, `nextLesson`).
-- `sanity/lib/queries.ts` — `LESSON_BY_SLUG_QUERY` resolves course, instructor, and sibling modules.
-- `components/cards/resource-card.tsx` — Prebuilt card for external resources.
-- `lib/format.ts` — Duration formatting utilities (`formatDuration`, `formatLessonDuration`, `formatStudentCount`).
-- `design/vertex-lesson.png` — Visual reference for layout: sidebar with course progress, module numbers, checkmarks, active "Now playing" lesson; breadcrumbs, lesson title with derived numbering (e.g. `LESSON 5.1`), embedded player, tabs (Lesson Content, Notes), overview notes, checklist, pro tip banner, resources grid, and bottom previous/next lesson bar.
+---
 
-## Decisions and assumptions
+## Decisions & Assumptions
+1. **Design as Source of Truth (§3):** The attached image `media_1794477029072_54daffe8.png` defines layout, colors, typography, and states. Desktop layout matches the screenshot exactly, with responsive adaptations (stacking columns and collapsible sidebar) for mobile devices.
+2. **Provider Embed (§7):** In accordance with AGENTS.md §7, video playback stays on the site using the provider's embed player (YouTube/Vimeo/Bunny) with `startSeconds` support, rather than a custom HTML5 player.
+3. **Sidebar Timeline & Progression:**
+   - Active module shows vertical connector line (timeline) connecting lesson nodes.
+   - Active lesson displays a solid terracotta dot, title, "Now playing" subtitle in terracotta, and a terracotta circular play button `[▶]` on the right.
+   - Inactive lessons display a hollow circle node, title, and lesson duration.
+   - Completed modules display an orange outline checkmark circle `(✓)` on the right.
+4. **Presentational Notes Tab (§7):** The "Notes" tab is presentational with a browser-session note pad per AGENTS.md §7.
+5. **Color Palette:**
+   - Primary terracotta/rust accent: `#C85A32` (Tailwind `primary-500` / `primary-600`)
+   - Peach/warm pastel backgrounds: `#FDF6F3` / `#FDF2EE`
+   - Neutral text: `#171717` (headings), `#737373` (subtitles/muted)
 
-1. **Exact Visual Reproduction of `design/vertex-lesson.png` (§3):**
-   - **Left Sidebar:** Course title, back-to-course button, progress percentage indicator, full course module list with module numbers. The active module is expanded with the current lesson highlighted in red/primary color and labeled "Now playing" with a play icon. Completed lessons show checkmarks.
-   - **Header & Breadcrumbs:** `All Courses > [Course] > [Module] > [Lesson Title]`.
-   - **Lesson Header:** Derived lesson badge `LESSON {moduleIndex + 1}.{lessonIndex + 1}` (e.g. `LESSON 5.1`), Playfair Display title, summary, bookmark button, and metadata row (duration, level, student count).
-   - **On-Site Video Embed (§7):** Render embedded YouTube player (`https://www.youtube.com/embed/{id}?autoplay=0&start={startSeconds}`). Do not build a custom player. Support optional `?start={seconds}` query param for search jump-in. Never send learners out to YouTube.
-   - **Tabs:** `Lesson Content` and `Notes` tabs (presentational per §7).
-   - **Content Sections:**
-     - Overview: Rich text rendered with `@portabletext/react`.
-     - "In this lesson you will": Checklist with orange circled checkmarks rendering `keyPoints`.
-     - "Pro Tip": Styled banner with lightbulb icon when `lesson.proTip` exists.
-     - "Resources": 3-column grid of resources with icons (Github, Docs, Link) and external link indicators.
-   - **Bottom Navigation Bar:** Floating sticky footer with "Previous Lesson" (linking to previous lesson with module info) and "Next Lesson" (linking to next lesson).
-2. **Server-Side Fetching & Static Slugs:**
-   - Server Component reads `courseSlug` and `lessonSlug` params.
-   - Queries `getLessonBySlug(lessonSlug)`. If not found or if the lesson doesn't belong to the course, returns `notFound()`.
-   - `generateMetadata()` produces clean dynamic SEO metadata for the lesson.
-3. **Responsive Mobile Adaptations (§3):**
-   - On mobile/tablet (< `lg`), collapse the lesson sidebar into a collapsible drawer or accordion above the video so learners can navigate without losing layout integrity.
+---
 
-## Files to touch
+## Files to Touch
+1. `app/courses/[slug]/lessons/[lessonSlug]/page.tsx` — layout, header, subtitle, metadata, responsive container.
+2. `components/lesson/lesson-sidebar.tsx` — curriculum accordion, module status, vertical timeline with active lesson indicator and circular play badge.
+3. `components/lesson/lesson-tabs.tsx` — tab navigation, overview text, key points with check icons, pro tip container, resource cards grid.
+4. `components/lesson/lesson-footer.tsx` — styled previous/next navigation buttons with lesson/module metadata.
+5. `components/lesson/video-embed.tsx` — video embed container and provider iframe parameters.
+6. `flow.md`, `decisions.md`, `quiz.md` — living docs updates.
 
-- `components/lesson/lesson-sidebar.tsx` — Course navigation sidebar with collapsible modules and active lesson indicator.
-- `components/lesson/video-embed.tsx` — Embed video player supporting YouTube, Vimeo, Bunny, and `start` seconds query param.
-- `components/lesson/portable-text-renderer.tsx` — Portable text renderer for lesson notes with custom styled blocks, links, and code.
-- `components/lesson/lesson-tabs.tsx` — Tabs component switching between "Lesson Content" and "Notes".
-- `components/lesson/lesson-footer.tsx` — Previous/next lesson footer navigation.
-- `app/courses/[courseSlug]/lessons/[lessonSlug]/page.tsx` — Main lesson page route.
-- `flow.md`, `decisions.md`, `quiz.md` — Living docs updates per AGENTS.md §15.
+---
 
-## Requirements
+## Requirements & Acceptance Criteria
+- [x] **Sidebar Match:** Left sidebar shows terracotta "← Back to course", square course icon, title, progress percent, module list with completed checks `(✓)`, active module filled number `(5)`, and vertical timeline with active lesson indicator and circular play badge.
+- [x] **Lesson Header:** Matches screenshot with `LESSON X.Y` terracotta badge, square bookmark icon button, serif display title, summary subtitle, and metadata row (Clock duration, BarChart level, Users student count).
+- [x] **Video Playback:** 16:9 embedded video plays cleanly on the page with support for `?start=` timestamp seeking.
+- [x] **Lesson Content Tabs:**
+  - `Lesson Content` tab active by default with terracotta underline.
+  - `Overview` section with serif heading and rich description.
+  - `In this lesson you will:` checklist with terracotta checkmark icons.
+  - `Pro Tip` highlighted peach box with lightbulb icon.
+  - `Resources` grid with document and GitHub cards.
+  - `Notes` tab allows writing personal notes.
+- [x] **Navigation Footer:** Bottom bar displays `← Previous Lesson` with previous lesson details, and `Next Lesson →` terracotta button with next lesson details.
+- [x] **Verification:** `npx tsc --noEmit` and `npm run lint` pass with 0 errors.
 
-1. Navigating to `/courses/[courseSlug]/lessons/[lessonSlug]` renders the exact layout from `design/vertex-lesson.png`.
-2. YouTube video embed loads and plays within the page without redirection.
-3. Optional URL query parameter `?start=120` starts the video at second 120 (`start=120`).
-4. Sidebar highlights the active lesson with "Now playing" and derives module & lesson numbers (e.g. `LESSON 5.1`).
-5. Rich notes from Sanity render cleanly in Portable Text.
-6. Key points, Pro Tip (if present), and Resources render according to the design.
-7. Previous and Next buttons correctly link to adjacent lessons in curriculum order across module boundaries.
-8. TypeScript check (`npx tsc --noEmit`) and lint (`npm run lint`) pass cleanly.
-9. Living docs updated with entries on top.
+---
 
-## Security considerations
-
-- All content querying runs server-side with private dataset token.
-- Video embeds use secure sandbox attributes and valid HTTPS origins.
-
-## Acceptance criteria
-
-- Navigating to `/courses/nextjs-app-router-in-depth/lessons/nextjs-app-router-in-depth-file-system-routing` renders the complete lesson page with sidebar and embedded video.
-- Clicking "Next Lesson" moves to `nextjs-app-router-in-depth-layouts-and-templates`.
-- Clicking "Back to course" returns to `/courses/nextjs-app-router-in-depth`.
-- Passing `?start=60` to the URL sets the video iframe's start timestamp.
-- Zero TypeScript and ESLint errors.
-
-## Checks to run
-
+## Checks to Run
 - `npx tsc --noEmit`
 - `npm run lint`
-
-## Manual test steps
-
-1. Run `npm run dev` and navigate to `http://localhost:3000/courses/nextjs-app-router-in-depth`.
-2. Click "Start Learning" or any lesson link in the syllabus.
-3. Verify the lesson page loads with the left sidebar showing all modules and the active lesson highlighted.
-4. Verify the YouTube embed loads and plays on the site.
-5. Verify the "In this lesson you will" key points and resources appear below the video.
-6. Click "Next Lesson" in the bottom footer and verify smooth navigation to the next lesson.
-
+- Manual browser verification on `http://localhost:3000/courses/[slug]/lessons/[lessonSlug]`

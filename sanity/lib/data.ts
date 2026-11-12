@@ -68,7 +68,15 @@ export async function getLessonBySlug(slug: string): Promise<LessonWithCourse | 
 
   // Derive module order, lesson indices, and next/previous navigation from course modules
   if (lesson.course?.modules) {
-    const flatLessons: { moduleTitle: string; lesson: { _id: string; title: string; slug: { _type: 'slug'; current: string } } }[] = []
+    const flatLessons: {
+      moduleTitle: string
+      lesson: {
+        _id: string
+        title: string
+        slug: { _type: 'slug'; current: string }
+        duration?: number
+      }
+    }[] = []
     let currentModuleIdx = -1
     let currentLessonIdx = -1
 
@@ -92,6 +100,7 @@ export async function getLessonBySlug(slug: string): Promise<LessonWithCourse | 
             title: flatLessons[currentIndex - 1].lesson.title,
             slug: flatLessons[currentIndex - 1].lesson.slug,
             moduleTitle: flatLessons[currentIndex - 1].moduleTitle,
+            duration: flatLessons[currentIndex - 1].lesson.duration,
           }
         : null
 
@@ -101,6 +110,7 @@ export async function getLessonBySlug(slug: string): Promise<LessonWithCourse | 
             title: flatLessons[currentIndex + 1].lesson.title,
             slug: flatLessons[currentIndex + 1].lesson.slug,
             moduleTitle: flatLessons[currentIndex + 1].moduleTitle,
+            duration: flatLessons[currentIndex + 1].lesson.duration,
           }
         : null
 
