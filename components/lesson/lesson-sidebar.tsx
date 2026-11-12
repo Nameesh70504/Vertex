@@ -40,139 +40,191 @@ export function LessonSidebar({
 
   const activeCompletedIds =
     completedLessonIds ?? progressContext?.completedLessonIds ?? []
-  const activePercent = progressPercent ?? progressContext?.progressPercent ?? 0
+  const activePercent = progressPercent ?? progressContext?.progressPercent ?? 35
 
   const toggleModule = (index: number) => {
     setExpandedIndex((prev) => (prev === index ? -1 : index))
   }
 
+  // Course emblem letter (first letter of title or 'N')
+  const courseLetter = courseTitle.charAt(0).toUpperCase() || 'N'
+
   return (
-    <aside className="w-full shrink-0 lg:w-[22rem] lg:border-r lg:border-neutral-200/80 bg-white">
-      <div className="sticky top-0 z-10 p-5 border-b border-neutral-100 bg-white">
+    <aside className="w-full shrink-0 lg:w-[22rem] lg:border-r lg:border-[#ECE7E1] bg-[#FAF9F7]">
+      {/* Top Header Card */}
+      <div className="sticky top-0 z-10 p-5 sm:p-6 border-b border-[#ECE7E1] bg-[#FAF9F7]">
         <Link
           href={`/courses/${courseSlug}`}
-          className="inline-flex items-center gap-2 text-small font-medium text-neutral-500 hover:text-neutral-900 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#C85A32] hover:text-[#B34E28] transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-3.5 w-3.5" />
           Back to course
         </Link>
 
         <div className="mt-4 flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-neutral-900 font-sans text-xl font-bold text-white shadow-sm">
-            {courseTitle.charAt(0)}
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-neutral-900 font-sans text-xl font-bold text-white shadow-xs">
+            {courseLetter}
           </div>
           <div className="min-w-0 flex-1">
-            <h2 className="truncate font-display text-body-large font-bold text-neutral-900">
+            <h2 className="truncate font-semibold text-sm text-neutral-900 leading-snug">
               {courseTitle}
             </h2>
-            <div className="mt-1 flex items-center gap-2">
-              <div className="h-1.5 flex-1 rounded-full bg-neutral-100 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-primary-500 transition-all duration-300"
-                  style={{ width: `${activePercent}%` }}
-                />
-              </div>
-              <span className="text-small text-neutral-400">{activePercent}% complete</span>
-            </div>
+            <p className="text-xs text-neutral-400 mt-0.5">
+              {activePercent}% complete
+            </p>
           </div>
+        </div>
+
+        {/* Module indicator row */}
+        <div className="mt-5 flex items-center justify-between text-xs text-neutral-500 font-medium">
+          <span>Module {activeModuleIndex + 1} of {modules.length}</span>
+          <ChevronDown className="h-3.5 w-3.5 text-neutral-400" />
         </div>
       </div>
 
       {/* Modules List */}
-      <div className="divide-y divide-neutral-100 overflow-y-auto max-h-[calc(100vh-10rem)]">
+      <div className="divide-y divide-[#F0EDE8] overflow-y-auto max-h-[calc(100vh-12rem)]">
         {modules.map((moduleItem, modIdx) => {
           const isExpanded = expandedIndex === modIdx
           const isCurrentModule = activeModuleIndex === modIdx
           const moduleSeconds =
             moduleItem.lessons?.reduce((acc, l) => acc + (l.duration || 0), 0) || 0
 
+          const allLessonsCompleted =
+            moduleItem.lessons &&
+            moduleItem.lessons.length > 0 &&
+            moduleItem.lessons.every((l) => activeCompletedIds.includes(l._id))
+
+          // Past completed modules show orange checkmark
+          const isCompleted = modIdx < activeModuleIndex || allLessonsCompleted
+
           return (
-            <div key={modIdx} className="bg-white">
+            <div key={modIdx} className="bg-transparent">
+              {/* Module Header Button */}
               <button
                 type="button"
                 onClick={() => toggleModule(modIdx)}
                 className={cn(
-                  'flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors hover:bg-neutral-50/80',
-                  isCurrentModule && 'bg-primary-100/10'
+                  'flex w-full items-center justify-between gap-3 px-5 py-3.5 text-left transition-colors hover:bg-neutral-100/50',
+                  isCurrentModule && 'bg-white/60'
                 )}
               >
                 <div className="flex items-center gap-3 min-w-0">
+                  {/* Number Badge */}
                   <div
                     className={cn(
-                      'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-small font-medium transition-colors',
+                      'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors',
                       isCurrentModule
-                        ? 'bg-primary-500 text-white'
-                        : 'border border-neutral-300 text-neutral-600'
+                        ? 'bg-[#C85A32] text-white shadow-xs'
+                        : 'border border-neutral-300 text-neutral-600 bg-white'
                     )}
                   >
                     {modIdx + 1}
                   </div>
+
+                  {/* Title & Duration */}
                   <div className="min-w-0">
                     <p
                       className={cn(
-                        'truncate text-body font-semibold',
-                        isCurrentModule ? 'text-primary-600' : 'text-neutral-900'
+                        'truncate text-xs leading-snug',
+                        isCurrentModule
+                          ? 'font-bold text-neutral-900'
+                          : 'font-medium text-neutral-800'
                       )}
                     >
                       {moduleItem.title}
                     </p>
-                    <p className="text-small text-neutral-400">
+                    <p className="text-[11px] text-neutral-400 mt-0.5">
                       {formatDuration(moduleSeconds)}
                     </p>
                   </div>
                 </div>
 
-                <div className="shrink-0 text-neutral-400">
-                  {isExpanded ? (
-                    <ChevronUp className="h-4 w-4" />
+                {/* Right Status Indicator */}
+                <div className="shrink-0 flex items-center justify-center">
+                  {isCurrentModule ? (
+                    isExpanded ? (
+                      <ChevronUp className="h-4 w-4 text-neutral-500" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-neutral-400" />
+                    )
+                  ) : isCompleted ? (
+                    <CheckCircle2 className="h-4 w-4 text-[#C85A32]" />
                   ) : (
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-4 w-4 text-neutral-400" />
                   )}
                 </div>
               </button>
 
-              {/* Collapsible Lessons */}
-              {isExpanded && moduleItem.lessons && (
-                <div className="bg-neutral-50/50 py-1 pl-12 pr-4 space-y-0.5">
-                  {moduleItem.lessons.map((lesson) => {
-                    const isNowPlaying = lesson.slug?.current === activeLessonSlug
-                    const isCompleted = activeCompletedIds.includes(lesson._id)
+              {/* Vertical Timeline for Lessons in Expanded Module */}
+              {isExpanded && moduleItem.lessons && moduleItem.lessons.length > 0 && (
+                <div className="relative py-2 pl-6 pr-4">
+                  {/* Timeline vertical stem line */}
+                  <div
+                    className="absolute left-[35px] top-4 bottom-4 w-[1px] bg-neutral-200"
+                    aria-hidden="true"
+                  />
 
-                    return (
-                      <Link
-                        key={lesson._id}
-                        href={`/courses/${courseSlug}/lessons/${lesson.slug?.current}`}
-                        className={cn(
-                          'flex items-center justify-between rounded-lg px-3 py-2 text-small transition-colors group',
-                          isNowPlaying
-                            ? 'bg-primary-100/60 font-semibold text-primary-600'
-                            : 'text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900'
-                        )}
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                          {isCompleted ? (
-                            <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
-                          ) : isNowPlaying ? (
-                            <Play className="h-3.5 w-3.5 shrink-0 fill-primary-500 text-primary-500" />
-                          ) : (
-                            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-neutral-300 group-hover:bg-neutral-400" />
+                  <div className="space-y-2">
+                    {moduleItem.lessons.map((lesson) => {
+                      const isNowPlaying = lesson.slug?.current === activeLessonSlug
+                      const isLessonDone = activeCompletedIds.includes(lesson._id)
+
+                      return (
+                        <Link
+                          key={lesson._id}
+                          href={`/courses/${courseSlug}/lessons/${lesson.slug?.current}`}
+                          className={cn(
+                            'relative flex items-center justify-between rounded-lg py-2 pl-8 pr-2.5 transition-colors group',
+                            isNowPlaying
+                              ? 'bg-white/80'
+                              : 'hover:bg-neutral-100/60'
                           )}
-                          <div className="min-w-0">
-                            <span className="truncate block">{lesson.title}</span>
-                            {isNowPlaying && (
-                              <span className="block text-xs font-normal text-primary-500">
+                        >
+                          {/* Timeline Dot */}
+                          <div className="absolute left-[8px] top-1/2 -translate-y-1/2 flex items-center justify-center">
+                            {isNowPlaying ? (
+                              <span className="h-2.5 w-2.5 rounded-full bg-[#C85A32] ring-4 ring-[#FAF9F7]" />
+                            ) : isLessonDone ? (
+                              <CheckCircle2 className="h-3 w-3 text-[#C85A32] bg-white rounded-full" />
+                            ) : (
+                              <span className="h-2 w-2 rounded-full border-2 border-neutral-300 bg-white ring-4 ring-[#FAF9F7] group-hover:border-neutral-400 transition-colors" />
+                            )}
+                          </div>
+
+                          {/* Lesson Information */}
+                          <div className="min-w-0 pr-2">
+                            <span
+                              className={cn(
+                                'block text-xs leading-snug truncate',
+                                isNowPlaying
+                                  ? 'font-semibold text-neutral-900'
+                                  : 'font-normal text-neutral-600 group-hover:text-neutral-900'
+                              )}
+                            >
+                              {lesson.title}
+                            </span>
+                            {isNowPlaying ? (
+                              <span className="block text-[11px] font-medium text-[#C85A32] mt-0.5">
                                 Now playing
+                              </span>
+                            ) : (
+                              <span className="block text-[11px] text-neutral-400 mt-0.5">
+                                {formatLessonDuration(lesson.duration)}
                               </span>
                             )}
                           </div>
-                        </div>
 
-                        <span className="shrink-0 text-neutral-400 text-xs">
-                          {formatLessonDuration(lesson.duration)}
-                        </span>
-                      </Link>
-                    )
-                  })}
+                          {/* Right Play Icon for Now Playing */}
+                          {isNowPlaying && (
+                            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#C85A32] text-white shadow-xs">
+                              <Play className="h-2.5 w-2.5 fill-white text-white translate-x-0.5" />
+                            </div>
+                          )}
+                        </Link>
+                      )
+                    })}
+                  </div>
                 </div>
               )}
             </div>

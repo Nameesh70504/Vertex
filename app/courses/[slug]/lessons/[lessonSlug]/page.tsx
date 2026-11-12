@@ -5,13 +5,10 @@ import { BarChart3, Bookmark, Clock, Users } from 'lucide-react'
 
 import { Navbar } from '@/components/nav/navbar'
 import { Breadcrumbs } from '@/components/nav/breadcrumbs'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { LessonSidebar } from '@/components/lesson/lesson-sidebar'
 import { VideoEmbed } from '@/components/lesson/video-embed'
 import { LessonTabs } from '@/components/lesson/lesson-tabs'
 import { LessonFooter } from '@/components/lesson/lesson-footer'
-import { MarkCompleteButton } from '@/components/progress/mark-complete-button'
 import { LessonProgressProvider } from '@/components/progress/lesson-progress-context'
 import { formatDuration, formatStudentCount } from '@/lib/format'
 import { getLessonBySlug } from '@/sanity/lib/data'
@@ -54,13 +51,16 @@ export default async function LessonPage({
   const lesson = await getLessonBySlug(lessonSlug)
 
   if (!lesson || !lesson.course) {
-    notFound()
+    return notFound()
   }
 
   const moduleIndex = lesson.moduleIndex ?? 0
   const lessonIndex = lesson.lessonIndex ?? 0
   const currentModuleTitle =
     lesson.course.modules?.[moduleIndex]?.title || 'Module'
+  const lessonSubtitle =
+    lesson.course.modules?.[moduleIndex]?.summary ||
+    'Learn how Next.js handles data fetching and caching in both Server and Client Components.'
 
   const modules = (lesson.course.modules || []).map((m) => ({
     title: m.title,
@@ -78,6 +78,8 @@ export default async function LessonPage({
     0
   )
 
+  const courseLevel = lesson.course.level || 'Intermediate'
+
   return (
     <div className="flex min-h-screen flex-1 flex-col bg-white">
       <Navbar
@@ -93,7 +95,7 @@ export default async function LessonPage({
         startSeconds={startSeconds}
         totalLessons={totalLessons}
       >
-        <div className="flex-1 flex flex-col lg:flex-row mx-auto w-full max-w-[90rem]">
+        <div className="flex-1 flex flex-col lg:flex-row w-full">
           {/* Left Module / Curriculum Sidebar */}
           <LessonSidebar
             courseSlug={courseSlug}
@@ -104,7 +106,7 @@ export default async function LessonPage({
           />
 
           {/* Main Lesson Content Area */}
-          <main className="flex-1 min-w-0 px-6 py-8 lg:px-10">
+          <main className="flex-1 min-w-0 px-6 py-8 sm:px-10 lg:px-12 max-w-5xl">
             <Breadcrumbs
               items={[
                 { label: 'All Courses', href: '/courses' },
@@ -115,36 +117,44 @@ export default async function LessonPage({
             />
 
             {/* Lesson Header */}
-            <div className="mt-6 flex flex-col gap-2">
+            <div className="mt-6 flex flex-col">
               <div className="flex items-center justify-between gap-4">
-                <Badge variant="popular" className="font-semibold tracking-wider text-xs uppercase">
+                <span className="inline-flex items-center rounded px-2.5 py-1 text-[11px] font-semibold tracking-wider uppercase bg-[#FDF2EE] text-[#C85A32]">
                   Lesson {moduleIndex + 1}.{lessonIndex + 1}
-                </Badge>
-                <div className="flex items-center gap-3">
-                  <MarkCompleteButton lessonId={lesson._id} />
-                  <Button variant="secondary" size="md" className="gap-1.5 text-xs text-neutral-600">
-                    <Bookmark className="h-3.5 w-3.5" />
-                    Bookmark
-                  </Button>
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    aria-label="Bookmark lesson"
+                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-200/90 text-neutral-400 hover:text-neutral-700 hover:border-neutral-300 transition-colors shadow-xs"
+                  >
+                    <Bookmark className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
 
-              <h1 className="mt-2 font-display text-display-2 font-bold text-neutral-900 leading-tight">
+              <h1 className="mt-3 font-display font-serif text-3xl sm:text-4xl font-bold tracking-tight text-neutral-900 leading-tight">
                 {lesson.title}
               </h1>
 
+              {/* Subtitle */}
+              <p className="mt-2 text-xs sm:text-sm text-neutral-600 leading-relaxed max-w-3xl">
+                {lessonSubtitle}
+              </p>
+
               {/* Metadata row */}
-              <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2 text-small text-neutral-500">
+              <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-neutral-500">
                 <span className="inline-flex items-center gap-1.5">
-                  <Clock className="h-4 w-4 text-neutral-400" />
-                  {formatDuration(lesson.duration)}
+                  <Clock className="h-3.5 w-3.5 text-neutral-400" />
+                  {formatDuration(lesson.duration || 5280)}
                 </span>
                 <span className="inline-flex items-center gap-1.5 capitalize">
-                  <BarChart3 className="h-4 w-4 text-neutral-400" />
-                  Intermediate
+                  <BarChart3 className="h-3.5 w-3.5 text-neutral-400" />
+                  {courseLevel}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Users className="h-4 w-4 text-neutral-400" />
+                  <Users className="h-3.5 w-3.5 text-neutral-400" />
                   {formatStudentCount(lesson.studentCount || 3426)} students
                 </span>
               </div>

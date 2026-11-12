@@ -8,6 +8,7 @@ import type { SearchResponse } from '@/sanity/types'
 import { VideoResultCard } from './video-result-card'
 import { LessonResultCard } from './lesson-result-card'
 import { Button } from '@/components/ui/button'
+import posthog from 'posthog-js'
 
 interface SearchResultsClientProps {
   initialData: SearchResponse
@@ -56,6 +57,12 @@ export function SearchResultsClient({
     e.preventDefault()
     const trimmed = query.trim()
     if (!trimmed) return
+
+    posthog.capture('search_submitted', {
+      sort_order: ['relevance', 'duration', 'title'].includes(sort)
+        ? sort
+        : 'relevance',
+    })
 
     startTransition(() => {
       const params = new URLSearchParams()

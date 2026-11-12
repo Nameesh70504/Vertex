@@ -1,5 +1,5 @@
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
-import type { PortableTextBlock } from 'sanity'
+import type { PortableTextBlock } from '@portabletext/types'
 
 const components: PortableTextComponents = {
   block: {

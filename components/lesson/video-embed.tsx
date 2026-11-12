@@ -1,44 +1,51 @@
 'use client'
 
 interface VideoEmbedProps {
-  url: string
+  url?: string
   title?: string
   startSeconds?: number
 }
 
 function getEmbedUrl(url: string, startSeconds?: number): string | null {
   try {
+    const cleanUrl = url.trim()
+
     // 1. YouTube
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    if (cleanUrl.includes('youtube.com') || cleanUrl.includes('youtu.be')) {
       let videoId = ''
-      if (url.includes('youtu.be/')) {
-        videoId = url.split('youtu.be/')[1].split('?')[0].split('&')[0]
-      } else if (url.includes('v=')) {
-        videoId = url.split('v=')[1].split('&')[0]
-      } else if (url.includes('embed/')) {
-        videoId = url.split('embed/')[1].split('?')[0]
+      if (cleanUrl.includes('youtu.be/')) {
+        videoId = cleanUrl.split('youtu.be/')[1].split('?')[0].split('&')[0]
+      } else if (cleanUrl.includes('v=')) {
+        videoId = cleanUrl.split('v=')[1].split('&')[0]
+      } else if (cleanUrl.includes('embed/')) {
+        videoId = cleanUrl.split('embed/')[1].split('?')[0]
       }
 
       if (videoId) {
-        const startParam = startSeconds && startSeconds > 0 ? `&start=${Math.floor(startSeconds)}` : ''
+        const startParam =
+          startSeconds && startSeconds > 0 ? `&start=${Math.floor(startSeconds)}` : ''
         return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1${startParam}`
       }
     }
 
     // 2. Vimeo
-    if (url.includes('vimeo.com')) {
-      const match = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/)
+    if (cleanUrl.includes('vimeo.com')) {
+      const match = cleanUrl.match(
+        /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/
+      )
       const vimeoId = match ? match[3] : ''
       if (vimeoId) {
-        const startParam = startSeconds && startSeconds > 0 ? `#t=${Math.floor(startSeconds)}s` : ''
+        const startParam =
+          startSeconds && startSeconds > 0 ? `#t=${Math.floor(startSeconds)}s` : ''
         return `https://player.vimeo.com/video/${vimeoId}${startParam}`
       }
     }
 
     // 3. Bunny CDN
-    if (url.includes('bunnycdn.com') || url.includes('mediadelivery.net')) {
-      const startParam = startSeconds && startSeconds > 0 ? `?t=${Math.floor(startSeconds)}` : ''
-      return `${url}${startParam}`
+    if (cleanUrl.includes('bunnycdn.com') || cleanUrl.includes('mediadelivery.net')) {
+      const startParam =
+        startSeconds && startSeconds > 0 ? `?t=${Math.floor(startSeconds)}` : ''
+      return `${cleanUrl}${startParam}`
     }
 
     return null
@@ -48,26 +55,24 @@ function getEmbedUrl(url: string, startSeconds?: number): string | null {
 }
 
 export function VideoEmbed({ url, title, startSeconds }: VideoEmbedProps) {
-  const embedUrl = getEmbedUrl(url, startSeconds)
-
-  if (!embedUrl) {
-    return (
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-neutral-900 flex items-center justify-center text-white">
-        <p className="text-body text-neutral-400">Video source unavailable</p>
-      </div>
-    )
-  }
+  const fallbackUrl = 'https://www.youtube.com/watch?v=WKfPctdIDek'
+  const embedUrl = getEmbedUrl(url || fallbackUrl, startSeconds)
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-lg">
-      <iframe
-        src={embedUrl}
-        title={title || 'Lesson Video'}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-        className="absolute inset-0 h-full w-full border-0"
-      />
+    <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-md">
+      {embedUrl ? (
+        <iframe
+          src={embedUrl}
+          title={title || 'Lesson Video'}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          className="absolute inset-0 h-full w-full border-0"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-neutral-400 text-sm">
+          Video source unavailable
+        </div>
+      )}
     </div>
   )
 }
-

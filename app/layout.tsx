@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { PostHogIdentity } from "@/components/nav/auth-controls";
 import "./globals.css";
 
 const inter = Inter({
@@ -31,6 +32,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-white font-sans text-neutral-900">
         <ClerkProvider>
+          <PostHogIdentity />
           {children}
         </ClerkProvider>
       </body>

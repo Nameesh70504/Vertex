@@ -5,6 +5,26 @@ answer key. Answers should be verifiable from the code, not from memory.
 
 ---
 
+## Lesson Page & Embedded Video Player UI Alignment
+
+### Questions
+
+1. Which video providers are supported in `VideoEmbed` (`components/lesson/video-embed.tsx`), and how is timestamp seeking achieved?
+
+2. How are completed modules vs. active modules visually distinguished in `LessonSidebar` (`components/lesson/lesson-sidebar.tsx`)?
+
+3. What elements compose the Lesson Header and tabs in accordance with the reference design `media_1794477029072_54daffe8.png`?
+
+### Answer key
+
+1. YouTube, Vimeo, and Bunny CDN. Timestamp seeking is achieved by appending provider-specific start query parameters (`&start=<seconds>` for YouTube, `#t=<seconds>s` for Vimeo, `?t=<seconds>` for Bunny) to the embed iframe URL.
+
+2. Completed modules display a round numbered badge outline and an orange/terracotta checkmark `(✓)` on the right; the active module displays a solid terracotta filled circle with white text, bold title, upward chevron `^`, and a vertical timeline stem connecting lessons with an active circular play button `[▶]`.
+
+3. The header features a terracotta uppercase `LESSON X.Y` pill badge, square outline bookmark icon button, serif display title (`font-display font-serif text-3xl sm:text-4xl`), subtitle, and metadata row (duration, level, student count). The tabs feature `Lesson Content` (with terracotta underline) and presentational `Notes`, rendering `Overview`, `In this lesson you will:`, peach `Pro Tip` callout, and 3-column `Resources` cards.
+
+---
+
 ## Suspense Boundary for Course Detail Dynamic Params
 
 ### Questions

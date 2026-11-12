@@ -110,6 +110,7 @@ export const LESSON_BY_SLUG_QUERY = defineQuery(`
       _id,
       title,
       slug,
+      level,
       instructor-> {
         _id,
         name,

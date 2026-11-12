@@ -5,6 +5,44 @@ newest on top. Keep it to the real call path — entry point, the chain, and whe
 
 ---
 
+## Lesson Page & Embedded Video Player UI Alignment (2026-11-12)
+
+### Entry points
+
+- Dynamic lesson route: `app/courses/[slug]/lessons/[lessonSlug]/page.tsx`
+- Video player component: `components/lesson/video-embed.tsx`
+- Interactive lesson sidebar: `components/lesson/lesson-sidebar.tsx`
+- Content tabs: `components/lesson/lesson-tabs.tsx`
+- Footer navigation: `components/lesson/lesson-footer.tsx`
+
+### Call chain
+
+1. **Lesson Data Fetching & Derivation:**
+   - User navigates to `/courses/[slug]/lessons/[lessonSlug]` (optionally with `?start=<seconds>`).
+   - `LessonPage` awaits `connection()` and resolves dynamic route parameters.
+   - `getLessonBySlug(lessonSlug)` queries Sanity via GROQ (`LESSON_BY_SLUG_QUERY`), resolving reverse-referenced course, module ordering, and previous/next navigation.
+   - Modules and lessons are normalized with indices, durations, and titles.
+
+2. **Sidebar Curriculum & Timeline Rendering:**
+   - `LessonSidebar` receives `modules`, `activeLessonSlug`, `activeModuleIndex`, and learner progress percent.
+   - Completed modules display an outline badge with number and terracotta checkmark `(✓)`.
+   - The active module renders an expanded section with a continuous vertical timeline stem.
+   - Active lesson displays a solid terracotta dot on the stem, bold title, "Now playing" subtitle in terracotta, and a terracotta circular play button `[▶]`.
+   - Inactive lessons display a hollow node on the stem, normal title, and duration label.
+
+3. **Lesson Header & Video Embed:**
+   - Breadcrumbs trace: `All Courses > [Course Title] > [Module Title] > [Lesson Title]`.
+   - Header displays terracotta `LESSON X.Y` pill badge and square bookmark icon button.
+   - Serif display title (`font-display font-serif text-3xl sm:text-4xl`) and metadata row (duration, level, student count).
+   - `VideoEmbed` extracts provider ID (YouTube, Vimeo, Bunny) and mounts responsive 16:9 iframe with `start` timestamp seeking.
+
+4. **Tabs & Navigation Footer:**
+   - `LessonTabs` toggles between `Lesson Content` (active with terracotta underline) and presentational `Notes`.
+   - Under content: serif `Overview` heading with Portable Text notes, `In this lesson you will:` checklist with terracotta checkmarks, peach `Pro Tip` callout with terracotta lightbulb icon, and 3-card `Resources` grid with document/GitHub icons.
+   - `LessonFooter` links to previous lesson with duration label and outline button, and next lesson with terracotta `Next Lesson →` button.
+
+---
+
 ## Suspense Boundary for Course Detail Dynamic Params (2026-11-09)
 
 ### Entry points
